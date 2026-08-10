@@ -52,6 +52,7 @@ nav:
   - References:
     - sucata.audio: references/sucata.audio.md
     - sucata.camera: references/sucata.camera.md
+    - sucata.dynlib: references/sucata.dynlib.md
     - sucata.events: references/sucata.events.md
     - sucata.filesystem: references/sucata.filesystem.md
     - sucata.gamepad: references/sucata.gamepad.md
