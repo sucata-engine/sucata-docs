@@ -8,31 +8,31 @@
       
       
       
-        <link rel="canonical" href="https://sucata.dev/getting-started/first-project/adding-textures/">
+        <link rel="canonical" href="https://sucata.dev/references/sucata.dynlib/">
       
       
-        <link rel="prev" href="../shooting-meteors/">
+        <link rel="prev" href="../sucata.camera/">
       
       
-        <link rel="next" href="../playing-sounds/">
+        <link rel="next" href="../sucata.events/">
       
       
         
       
       
-      <link rel="icon" href="../../../images/icon.png">
+      <link rel="icon" href="../../images/icon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Adding textures - Sucata</title>
+        <title>sucata.dynlib - Sucata</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -51,7 +51,7 @@
       
     
     
-    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#adding-textures" class="md-skip">
+        <a href="#sucatadynlib" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../.." title="Sucata" class="md-header__button md-logo" aria-label="Sucata" data-md-component="logo">
+    <a href="../.." title="Sucata" class="md-header__button md-logo" aria-label="Sucata" data-md-component="logo">
       
-  <img src="../../../images/icon.png" alt="logo">
+  <img src="../../images/icon.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -109,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Adding textures
+              sucata.dynlib
             
           </span>
         </div>
@@ -206,9 +206,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../.." title="Sucata" class="md-nav__button md-logo" aria-label="Sucata" data-md-component="logo">
+    <a href="../.." title="Sucata" class="md-nav__button md-logo" aria-label="Sucata" data-md-component="logo">
       
-  <img src="../../../images/icon.png" alt="logo">
+  <img src="../../images/icon.png" alt="logo">
 
     </a>
     Sucata
@@ -235,7 +235,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../.." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -259,10 +259,8 @@
       
   
   
-    
   
   
-  
     
     
       
@@ -276,11 +274,13 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
@@ -301,7 +301,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -319,7 +319,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../installation/" class="md-nav__link">
+      <a href="../../getting-started/installation/" class="md-nav__link">
         
   
   
@@ -347,7 +347,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/" class="md-nav__link">
+      <a href="../../getting-started/concepts/" class="md-nav__link">
         
   
   
@@ -372,10 +372,8 @@
                 
   
   
-    
   
   
-  
     
     
       
@@ -399,11 +397,13 @@
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
         
           
           <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
@@ -424,7 +424,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -442,7 +442,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../overview/" class="md-nav__link">
+      <a href="../../getting-started/first-project/overview/" class="md-nav__link">
         
   
   
@@ -470,7 +470,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../configuring-project/" class="md-nav__link">
+      <a href="../../getting-started/first-project/configuring-project/" class="md-nav__link">
         
   
   
@@ -498,7 +498,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../creating-player/" class="md-nav__link">
+      <a href="../../getting-started/first-project/creating-player/" class="md-nav__link">
         
   
   
@@ -526,7 +526,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../creating-meteors/" class="md-nav__link">
+      <a href="../../getting-started/first-project/creating-meteors/" class="md-nav__link">
         
   
   
@@ -554,7 +554,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../game-manager/" class="md-nav__link">
+      <a href="../../getting-started/first-project/game-manager/" class="md-nav__link">
         
   
   
@@ -582,7 +582,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../shooting-meteors/" class="md-nav__link">
+      <a href="../../getting-started/first-project/shooting-meteors/" class="md-nav__link">
         
   
   
@@ -607,37 +607,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Adding textures
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../getting-started/first-project/adding-textures/" class="md-nav__link">
         
   
   
@@ -653,59 +626,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#bullet-texture" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Bullet Texture
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#meteor-texture" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Meteor Texture
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#player-texture" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Player Texture
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -718,7 +638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../playing-sounds/" class="md-nav__link">
+      <a href="../../getting-started/first-project/playing-sounds/" class="md-nav__link">
         
   
   
@@ -761,7 +681,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../examples/" class="md-nav__link">
+      <a href="../../examples/" class="md-nav__link">
         
   
   
@@ -788,7 +708,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../cli/" class="md-nav__link">
+      <a href="../../cli/" class="md-nav__link">
         
   
   
@@ -815,7 +735,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../agent-guide/" class="md-nav__link">
+      <a href="../../agent-guide/" class="md-nav__link">
         
   
   
@@ -839,8 +759,10 @@
       
   
   
+    
   
   
+  
     
     
       
@@ -874,13 +796,11 @@
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
           <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
@@ -901,7 +821,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -919,7 +839,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../references/sucata.audio/" class="md-nav__link">
+      <a href="../sucata.audio/" class="md-nav__link">
         
   
   
@@ -947,7 +867,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../references/sucata.camera/" class="md-nav__link">
+      <a href="../sucata.camera/" class="md-nav__link">
         
   
   
@@ -972,10 +892,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../../references/sucata.dynlib/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sucata.dynlib
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -991,6 +938,59 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sucatadynlibload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.dynlib.load
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatadynlibcall" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.dynlib.call
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatadynlibunload" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.dynlib.unload
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1003,7 +1003,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../references/sucata.events/" class="md-nav__link">
+      <a href="../sucata.events/" class="md-nav__link">
         
   
   
@@ -1031,7 +1031,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../references/sucata.filesystem/" class="md-nav__link">
+      <a href="../sucata.filesystem/" class="md-nav__link">
         
   
   
@@ -1059,7 +1059,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../references/sucata.gamepad/" class="md-nav__link">
+      <a href="../sucata.gamepad/" class="md-nav__link">
         
   
   
@@ -1087,7 +1087,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../references/sucata.graphic/" class="md-nav__link">
+      <a href="../sucata.graphic/" class="md-nav__link">
         
   
   
@@ -1115,7 +1115,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../references/sucata.input/" class="md-nav__link">
+      <a href="../sucata.input/" class="md-nav__link">
         
   
   
@@ -1143,7 +1143,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../references/sucata.math/" class="md-nav__link">
+      <a href="../sucata.math/" class="md-nav__link">
         
   
   
@@ -1171,7 +1171,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../references/sucata.meta/" class="md-nav__link">
+      <a href="../sucata.meta/" class="md-nav__link">
         
   
   
@@ -1199,7 +1199,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../references/sucata.scene/" class="md-nav__link">
+      <a href="../sucata.scene/" class="md-nav__link">
         
   
   
@@ -1227,7 +1227,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../references/sucata.time/" class="md-nav__link">
+      <a href="../sucata.time/" class="md-nav__link">
         
   
   
@@ -1255,7 +1255,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../references/sucata.window/" class="md-nav__link">
+      <a href="../sucata.window/" class="md-nav__link">
         
   
   
@@ -1290,7 +1290,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../third-party/" class="md-nav__link">
+      <a href="../../third-party/" class="md-nav__link">
         
   
   
@@ -1317,7 +1317,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../about/" class="md-nav__link">
+      <a href="../../about/" class="md-nav__link">
         
   
   
@@ -1364,10 +1364,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bullet-texture" class="md-nav__link">
+  <a href="#sucatadynlibload" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bullet Texture
+        sucata.dynlib.load
       
     </span>
   </a>
@@ -1375,10 +1375,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#meteor-texture" class="md-nav__link">
+  <a href="#sucatadynlibcall" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Meteor Texture
+        sucata.dynlib.call
       
     </span>
   </a>
@@ -1386,10 +1386,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#player-texture" class="md-nav__link">
+  <a href="#sucatadynlibunload" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Player Texture
+        sucata.dynlib.unload
       
     </span>
   </a>
@@ -1421,7 +1421,7 @@
   
   
     <li class="md-path__item">
-      <a href="../../.." class="md-path__link">
+      <a href="../.." class="md-path__link">
         
   <span class="md-ellipsis">
     Home
@@ -1439,28 +1439,10 @@
     
     
       <li class="md-path__item">
-        <a href="../../installation/" class="md-path__link">
+        <a href="../sucata.audio/" class="md-path__link">
           
   <span class="md-ellipsis">
-    Getting Started
-  </span>
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-    
-    
-      <li class="md-path__item">
-        <a href="../overview/" class="md-path__link">
-          
-  <span class="md-ellipsis">
-    First Project
+    References
   </span>
 
         </a>
@@ -1482,153 +1464,85 @@
   
 
 
-<h1 id="adding-textures">Adding Textures</h1>
-<p>In this section we will add <strong>textures</strong> to our game.<br />
-We will add textures for the <strong>player</strong>, <strong>meteors</strong>, and <strong>bullets</strong>.</p>
-<p>You can download the assets used in this tutorial from<br />
-<a href="https://github.com/sucata-engine/meteors-sucata/src/branch/main/sprites">here</a>.</p>
-<hr />
-<h2 id="bullet-texture">Bullet Texture</h2>
-<p>Let's start with the simplest texture: the <strong>bullet</strong>.</p>
-<p>Update the state in <code>entities/bullet.lua</code>:</p>
-<pre><code class="language-lua">local function bullet(x, y)
-    return {
-        state = {
-            x = x,
-            y = y,
-            texture = &quot;src://sprites/bullet.png&quot;, -- Texture path
-            width = 16, -- Bullet width
-            height = 16 -- Bullet height
-        },
-        behaviours = {
-            Behaviours.Bullet,
-            Behaviours.ApplyForces,
-            Behaviours.DrawSprite,
-        }
-    }
-end
+<h1 id="sucatadynlib">sucata.dynlib</h1>
+<p>Load native shared libraries (<code>.dll</code>/<code>.so</code>/<code>.dylib</code>) at runtime and call functions exported by them.</p>
+<p>This is a low-level API meant for native plugins, not regular game code. Exported functions must
+be written against the Lua 5.4 C API (<code>lua.h</code>), with the exact signature <code>int (*)(lua_State *L)</code> —
+the same signature every <code>sucata.*</code> function uses internally. When called, the plugin function
+receives the real, live Lua state: read arguments and push return values using the Lua C API
+(<code>lua_tonumber</code>, <code>lua_tostring</code>, <code>lua_pushnumber</code>, <code>luaL_error</code>, ...), exactly like a standard Lua C
+module (this mirrors what <code>package.loadlib</code> does in stock Lua).</p>
+<p><strong>Important:</strong> the plugin must <strong>not</strong> statically link its own copy of the Lua library. It should
+only include the Lua headers and leave the <code>lua_*</code>/<code>luaL_*</code> symbols unresolved at link time — the
+Sucata Player process exports them at runtime, so <code>dlopen</code>/<code>LoadLibrary</code> resolves the plugin's calls
+against the <em>same</em> Lua instance the engine is already running. Linking a second, separate copy of
+Lua into the plugin will desync the interpreter state and can crash the engine, especially across
+<code>luaL_error</code>/<code>lua_error</code>.</p>
+<p>Minimal example plugin (<code>plugin.c</code>, compiled with <code>gcc -shared -fPIC -o plugin.so plugin.c</code>, no
+<code>-llua</code>):</p>
+<pre><code class="language-c">#include &quot;lua.h&quot;
+#include &quot;lauxlib.h&quot;
 
-return bullet
-</code></pre>
-<blockquote>
-<p><strong>Note</strong>
-<code>src://</code> represents the <strong>root directory of the project</strong>.
-Use this prefix whenever referencing files inside the project.</p>
-</blockquote>
-<p>The <code>DrawSprite</code> behaviour automatically renders textures when the <code>texture</code>, <code>width</code>, and <code>height</code> fields are present in the entity state.</p>
-<p>The result should look like this:</p>
-<p><img alt="" src="../images/bullet-texture.png" /></p>
-<hr />
-<h2 id="meteor-texture">Meteor Texture</h2>
-<p>The meteor texture uses a <strong>texture atlas</strong> so the meteor appearance changes based on its health.</p>
-<p>First, define the texture in the meteor entity (<code>entities/meteor.lua</code>):</p>
-<pre><code class="language-lua">local function meteor()
-    return {
-        state = {
-            y = -16,
-            texture = &quot;src://sprites/meteor.png&quot;, -- Meteor texture
-            atlas_size = 8 -- Split the texture into 8 horizontal frames
-        },
-        behaviours = {
-            Behaviours.RandomStartPosition,
-            Behaviours.Meteor,
-            Behaviours.ApplyForces,
-            Behaviours.DrawSprite,
-        }
-    }
-end
-
-return meteor
-</code></pre>
-<p>Now update the meteor behaviour in <code>behaviours/meteor.lua</code>:</p>
-<pre><code class="language-lua">return {
-    init = function(state)
-        sucata.scene.add_tag(state, &quot;meteor&quot;)
-
-        state.speed = state.speed or math.random(100, 200)
-        state.health = state.health or math.random(1, 5)
-        state.force_y = state.speed
-    end,
-
-    tick = function(state)
-        if state.y &gt; 540 then
-            sucata.events.emit(&quot;meteor_reached&quot;, state)
-            sucata.scene.destroy(state)
-        end
-
-        -- Select the texture frame based on meteor health
-        state.atlas_x = state.health - 1
-    end
+int add(lua_State *L) {
+    lua_Number a = lua_tonumber(L, 1);
+    lua_Number b = lua_tonumber(L, 2);
+    lua_pushnumber(L, a + b);
+    return 1;
 }
 </code></pre>
-<p>Now the meteor sprite will change depending on its health:</p>
-<p><img alt="" src="../images/meteor-texture.gif" /></p>
-<hr />
-<h2 id="player-texture">Player Texture</h2>
-<p>For the player we will add a <strong>texture atlas</strong> that represents the ship inclination.</p>
-<p>First create a new behaviour in <code>behaviours/inclination.lua</code>:</p>
-<pre><code class="language-lua">return {
-    init = function(state)
-        state.inclination = 2 -- Initial inclination frame
-    end,
-
-    tick = function(state)
-        local dt = sucata.time.get_delta()
-
-        if sucata.input.is_held(&quot;left&quot;, &quot;a&quot;) then
-            state.inclination = sucata.math.clamp(
-                state.inclination - (15 * dt),
-                0,
-                4
-            )
-
-        elseif sucata.input.is_held(&quot;right&quot;, &quot;d&quot;) then
-            state.inclination = sucata.math.clamp(
-                state.inclination + (15 * dt),
-                0,
-                4
-            )
-
-        else
-            state.inclination = sucata.math.lerp(
-                state.inclination,
-                2,
-                dt * 10
-            )
-        end
-
-        state.atlas_x = math.floor(state.inclination)
-    end
-}
-</code></pre>
-<p>Register the behaviour in <code>behaviours/init.lua</code>:</p>
-<pre><code class="language-lua">return {
-    ...
-    Inclination = require(&quot;behaviours.inclination&quot;),
-}
-</code></pre>
-<p>Now update the player entity in <code>entities/player.lua</code>:</p>
-<pre><code class="language-lua">local function player(x, y)
-    return {
-        state = {
-            x = x,
-            y = y,
-            texture = &quot;src://sprites/ship.png&quot;, -- Player texture
-            atlas_size = 8 -- Split texture into 8 frames
-        },
-        behaviours = {
-            Behaviours.Player,
-            Behaviours.Inclination,
-            Behaviours.Shooter,
-            Behaviours.DrawSprite,
-        }
-    }
+<pre><code class="language-lua">local handle, err = sucata.dynlib.load(&quot;plugin.so&quot;)
+if not handle then
+    error(err)
 end
 
-return player
+local sum = sucata.dynlib.call(handle, &quot;add&quot;, 3, 4)
+print(sum) -- 7
+
+sucata.dynlib.unload(handle)
 </code></pre>
-<p>Now the player ship will tilt depending on movement:</p>
-<p><img alt="" src="../images/player-animation.gif" /></p>
+<hr />
+<h2 id="sucatadynlibload">sucata.dynlib.load</h2>
+<p>Loads a native shared library from disk and returns a handle to it. Accepts <code>src://</code>, <code>data://</code>,
+<code>build://</code> virtual paths (resolved the same way as <code>sucata.filesystem</code>) as well as plain relative
+or absolute paths. If the path has no extension, the platform's native extension
+(<code>.dll</code>/<code>.so</code>/<code>.dylib</code>) is tried as a fallback.</p>
+<p><strong>parameters</strong></p>
+<ul>
+<li>path <code>string</code> - Path to the shared library</li>
+</ul>
+<p><strong>return</strong></p>
+<ul>
+<li>handle <code>number|nil</code> - A handle to the loaded library, or <code>nil</code> on failure</li>
+<li>error <code>string?</code> - An error message, present only when <code>handle</code> is <code>nil</code></li>
+</ul>
+<hr />
+<h2 id="sucatadynlibcall">sucata.dynlib.call</h2>
+<p>Looks up an exported symbol in a loaded library and calls it directly as a Lua C function, forwarding
+every extra argument to it on the Lua stack. Returns whatever the native function pushes.</p>
+<p>Raises a Lua error if the handle is invalid or the symbol isn't found. If the native function itself
+raises a Lua error (<code>luaL_error</code>/<code>lua_error</code>), it propagates like any other Lua error and can be
+caught with <code>pcall</code>.</p>
+<p><strong>parameters</strong></p>
+<ul>
+<li>handle <code>number</code> - A handle returned by <code>sucata.dynlib.load</code></li>
+<li>function_name <code>string</code> - The name of the exported function to call</li>
+<li>... <code>any</code> - Arguments forwarded to the native function</li>
+</ul>
+<p><strong>return</strong></p>
+<ul>
+<li>... <code>any</code> - Whatever the native function returns</li>
+</ul>
+<hr />
+<h2 id="sucatadynlibunload">sucata.dynlib.unload</h2>
+<p>Unloads a previously loaded library and invalidates its handle.</p>
+<p><strong>parameters</strong></p>
+<ul>
+<li>handle <code>number</code> - A handle returned by <code>sucata.dynlib.load</code></li>
+</ul>
+<p><strong>return</strong></p>
+<ul>
+<li>success <code>boolean</code> - Whether the library was unloaded</li>
+</ul>
 
 
 
@@ -1686,10 +1600,10 @@ return player
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["search.suggest", "search.highlight", "search.share", "navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.path", "navigation.expand", "navigation.top", "navigation.tracking", "navigation.indexes"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["search.suggest", "search.highlight", "search.share", "navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.path", "navigation.expand", "navigation.top", "navigation.tracking", "navigation.indexes"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
