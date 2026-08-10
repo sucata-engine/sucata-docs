@@ -1,0 +1,2166 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://sucata.dev/agent-guide/">
+      
+      
+        <link rel="prev" href="../cli/">
+      
+      
+        <link rel="next" href="../references/sucata.audio/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../images/icon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Agent Guide - Sucata</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="light-blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#building-a-game-with-sucata-agent-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Sucata" class="md-header__button md-logo" aria-label="Sucata" data-md-component="logo">
+      
+  <img src="../images/icon.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Sucata
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Agent Guide
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/sucata-engine/sucata-engine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    sucata-engine
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Sucata" class="md-nav__button md-logo" aria-label="Sucata" data-md-component="logo">
+      
+  <img src="../images/icon.png" alt="logo">
+
+    </a>
+    Sucata
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/sucata-engine/sucata-engine" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    sucata-engine
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    First Project
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    First Project
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/first-project/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/first-project/configuring-project/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuring the Project
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/first-project/creating-player/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating the Player
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/first-project/creating-meteors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating Meteors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/first-project/game-manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Game Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/first-project/shooting-meteors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shooting meteors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/first-project/adding-textures/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adding textures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/first-project/playing-sounds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Playing sounds
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Guide
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-sucata-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Sucata is
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-layout-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project layout convention
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scene" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scene
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#behaviour-the-core-building-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Behaviour — the core building block
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-hierarchy-relationships-via-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        No hierarchy — relationships via ids
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#globalpersistent-entities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Global/persistent entities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Events
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#states-pattern-optional-but-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "States" pattern (optional but recommended)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rendering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rendering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#input" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#audio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Audio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#filesystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filesystem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-lua-api-condensed-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full Lua API — condensed reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gotchas-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gotchas checklist
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    References
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/sucata.audio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sucata.audio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/sucata.camera/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sucata.camera
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/sucata.events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sucata.events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/sucata.filesystem/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sucata.filesystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/sucata.gamepad/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sucata.gamepad
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/sucata.graphic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sucata.graphic
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/sucata.input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sucata.input
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/sucata.math/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sucata.math
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/sucata.meta/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sucata.meta
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/sucata.scene/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sucata.scene
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/sucata.time/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sucata.time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/sucata.window/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sucata.window
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../third-party/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Third Party
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-sucata-is" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Sucata is
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-layout-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project layout convention
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scene" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scene
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#behaviour-the-core-building-block" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Behaviour — the core building block
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-hierarchy-relationships-via-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        No hierarchy — relationships via ids
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tags
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#globalpersistent-entities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Global/persistent entities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#events" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Events
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#states-pattern-optional-but-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "States" pattern (optional but recommended)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rendering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rendering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#input" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#audio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Audio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#filesystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filesystem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#building" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-lua-api-condensed-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full Lua API — condensed reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gotchas-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gotchas checklist
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="building-a-game-with-sucata-agent-guide">Building a game with Sucata (Agent Guide)</h1>
+<p>This page is a practical, self-contained guide for creating a game with <strong>Sucata</strong>, in the spirit of Love2D/Godot. It's aimed at whoever — human or AI coding agent — is writing a <em>game</em> on top of Sucata, condensing everything needed to be productive on one page, with links to the full reference for exhaustive per-function detail. It's the same guide shipped as <code>AGENT.md</code> in the <a href="https://github.com/sucata-engine/sucata">sucata</a> repository, for use by coding agents working directly in a project's source tree.</p>
+<h2 id="what-sucata-is">What Sucata is</h2>
+<ul>
+<li><strong>Engine core</strong>: Odin, using <a href="https://github.com/floooh/sokol">sokol</a> for graphics/audio-input plumbing, SDL3 for gamepad, miniaudio for audio.</li>
+<li><strong>Game logic</strong>: pure Lua. You never touch Odin to make a game — only to contribute to the engine itself.</li>
+<li><strong>Everything is data + functions.</strong> There is no class/inheritance system and no scene-graph hierarchy. A game is a flat pool of <em>entities</em> (state + a list of reusable <em>behaviours</em>) plus global systems (input, audio, timers, events) you call from Lua.</li>
+</ul>
+<h2 id="setup">Setup</h2>
+<pre><code class="language-bash"># install — see the installation guide for the one-liner per OS
+sucata version   # verify install
+</code></pre>
+<p>Recommended: install the <a href="https://luals.github.io">sumneko Lua extension</a> + the <strong>sucata</strong> Lua addon (Addon Manager → search "sucata") for autocompletion against the engine's Lua API.</p>
+<h2 id="cli-commands">CLI commands</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sucata run &lt;main.lua&gt; [--entity &lt;file&gt;]</code></td>
+<td>Run a game (or a single entity file, for isolated testing) through the engine in dev mode.</td>
+</tr>
+<tr>
+<td><code>sucata build &lt;main.lua&gt; [--icon &lt;path&gt;]</code></td>
+<td>Package the game into a native, OS-specific distributable (see "Building" below). Current OS only, no cross-build yet.</td>
+</tr>
+<tr>
+<td><code>sucata shader build &lt;file.glsl&gt;</code></td>
+<td>Compile a custom <code>.glsl</code> shader into the engine's <code>.schd</code> format.</td>
+</tr>
+<tr>
+<td><code>sucata shader create &lt;file&gt; [--post-processing\|-pp] [--font\|-f]</code></td>
+<td>Scaffold a starter <code>.glsl</code> shader template.</td>
+</tr>
+<tr>
+<td><code>sucata version</code></td>
+<td>Print engine version.</td>
+</tr>
+</tbody>
+</table>
+<p>See the <a href="../cli/">CLI page</a> for full flag details.</p>
+<h2 id="project-layout-convention">Project layout convention</h2>
+<p>There's no enforced scaffold, but every existing Sucata game (including the official <a href="https://github.com/sucata-engine/meteors-sucata">meteors-sucata</a> example, and the <a href="../getting-started/first-project/overview/">First Project</a> tutorial) follows this shape:</p>
+<pre><code>my-game/
+├── main.lua              Entry point — required first by `sucata run`/`sucata build`
+├── config.lua             Window setup (see below) — required from main.lua
+├── behaviours/
+│   ├── init.lua           Aggregates ALL behaviours into one shared table (see &quot;Behaviours&quot; below — important!)
+│   ├── player.lua
+│   ├── meteor.lua
+│   └── ...
+├── entities/              Factory functions: fn(...) -&gt; { state = {...}, behaviours = {...} }
+│   ├── player.lua
+│   ├── meteor.lua
+│   └── ...
+├── states/                Optional: plain modules of pure functions that mutate a state field
+│   └── health.lua         (shared logic callable from multiple behaviours, e.g. health.remove(state))
+├── sprites/                Texture assets (.png)
+├── sounds/                 Audio assets (.ogg, etc)
+└── fonts/                  Font assets
+</code></pre>
+<p><code>main.lua</code> example:</p>
+<pre><code class="language-lua">require(&quot;config&quot;)
+
+Behaviours = require(&quot;behaviours&quot;)  -- single shared reference, see below
+
+local Player = require(&quot;entities.player&quot;)
+local game_manager = require(&quot;entities.game_manager&quot;)
+
+sucata.scene.spawn(Player(480, 500))
+sucata.scene.spawn(game_manager)
+</code></pre>
+<p><code>config.lua</code> example — window setup, conventionally isolated in its own file:</p>
+<pre><code class="language-lua">sucata.window.set_window_size(960, 540)
+sucata.window.set_keep_aspect(1) -- 0 = off, 1 = keep aspect with bars, 2 = keep aspect with crop
+sucata.window.set_window_title(&quot;My Game&quot;)
+sucata.window.set_vsync(1)
+sucata.window.show_debug_info(true) -- disable before shipping
+sucata.window.set_window_icon(&quot;src://icon.png&quot;)
+sucata.window.set_fullscreen(false)
+</code></pre>
+<p>Asset/require paths use the <code>src://</code> virtual prefix, meaning "project root" — it resolves correctly both when running from loose files in dev mode and from inside the compiled <code>assets.scta</code> archive after <code>sucata build</code>. Always reference project assets this way: <code>"src://sprites/ship.png"</code>.</p>
+<h2 id="core-concepts">Core concepts</h2>
+<h3 id="scene">Scene</h3>
+<p>A scene is just the pool of currently-active entities. <code>sucata.scene.load_scene(entities)</code> loads a whole array at once; <code>sucata.scene.spawn(entity)</code> adds one and returns its id.</p>
+<h3 id="entity">Entity</h3>
+<p>An entity is a plain table with two fields:</p>
+<pre><code class="language-lua">{
+  state = { x = 0, y = 0 },      -- unique data for this entity (id is injected by the engine on spawn)
+  behaviours = { Behaviours.Foo, Behaviours.Bar }, -- ordered list of behaviours applied to it
+}
+</code></pre>
+<p>Entities are usually built via a factory function in <code>entities/&lt;name&gt;.lua</code>:</p>
+<pre><code class="language-lua">-- entities/player.lua
+local function player(x, y)
+  return {
+    state = { x = x, y = y },
+    behaviours = { Behaviours.Player, Behaviours.Shooter, Behaviours.DrawSprite },
+  }
+end
+
+return player
+</code></pre>
+<pre><code class="language-lua">sucata.scene.spawn(Player(480, 500))
+</code></pre>
+<h3 id="behaviour-the-core-building-block">Behaviour — the core building block</h3>
+<p>A behaviour is a <strong>stateless, reusable</strong> table of up to four optional functions, all receiving the entity's <code>state</code> table:</p>
+<pre><code class="language-lua">return {
+  init = function(state) end,  -- once, when the entity is spawned/scene loads
+  tick = function(state) end,  -- every frame, before drawing — game logic, input, physics
+  draw = function(state) end,  -- every frame — call sucata.graphic.* here ONLY (see Rendering)
+  free = function(state) end,  -- once, right before the entity is removed from the scene
+}
+</code></pre>
+<p><strong>Behaviours on an entity run in the order listed.</strong> Put logic before rendering (e.g. <code>Player</code> movement before <code>DrawSprite</code>).</p>
+<blockquote>
+<p><strong>Critical performance/correctness rule</strong>: Sucata reuses behaviours that share the same Lua table <em>pointer identity</em>. Always define each behaviour once and expose it through a single shared table, conventionally <code>behaviours/init.lua</code>:</p>
+<p><code>lua
+-- behaviours/init.lua
+return {
+  DrawSprite = require("behaviours.draw_sprite"),
+  Player     = require("behaviours.player"),
+  Shooter    = require("behaviours.shooter"),
+}</code>
+<code>lua
+-- main.lua
+Behaviours = require("behaviours")</code>
+Then reference <code>Behaviours.Player</code> etc. everywhere — never <code>require("behaviours.player")</code> again from inside entity files. Requiring it fresh in multiple places would defeat behaviour reuse.</p>
+</blockquote>
+<p>A common building-block behaviour worth copying into most projects, <code>DrawSprite</code> (renders <code>state.texture</code>/<code>width</code>/<code>height</code> if present):</p>
+<pre><code class="language-lua">return {
+  init = function(state)
+    state.x = state.x or 0
+    state.y = state.y or 0
+    state.width = state.width or 32
+    state.height = state.height or 32
+    state.texture = state.texture or &quot;&quot;
+    state.atlas_x = state.atlas_x or 0
+  end,
+  draw = function(state)
+    sucata.graphic.draw_rect({
+      x = state.x, y = state.y,
+      width = state.width, height = state.height,
+      texture = state.texture,
+      origin = 0.5, -- center the sprite on x,y instead of top-left
+      atlas_size = state.atlas_size,
+      atlas_x = state.atlas_x,
+    })
+  end
+}
+</code></pre>
+<p>Another common one, <code>ApplyForces</code> (simple velocity integration):</p>
+<pre><code class="language-lua">return {
+  init = function(state)
+    state.x = state.x or 0
+    state.y = state.y or 0
+    state.force_x = state.force_x or 0
+    state.force_y = state.force_y or 0
+  end,
+  tick = function(state)
+    local dt = sucata.time.get_delta()
+    state.x = state.x + state.force_x * dt
+    state.y = state.y + state.force_y * dt
+  end
+}
+</code></pre>
+<h3 id="no-hierarchy-relationships-via-ids">No hierarchy — relationships via ids</h3>
+<p>Entities are flat; there's no parent/child tree. To relate entities, store one's id in another's state and resolve it later:</p>
+<pre><code class="language-lua">local bullet_id = sucata.scene.spawn(Bullet())
+self.child_id = bullet_id
+...
+local bullet = sucata.scene.find_by_id(self.child_id)
+if bullet then bullet.x = self.x end
+</code></pre>
+<h3 id="tags">Tags</h3>
+<p>Group entities for querying (e.g. all enemies of a kind):</p>
+<pre><code class="language-lua">sucata.scene.add_tag(state, &quot;meteor&quot;)
+local meteors = sucata.scene.get_entities_by_tag(&quot;meteor&quot;)
+for _, id in ipairs(meteors) do
+  local meteor = sucata.scene.find_by_id(id)
+  -- ...
+end
+</code></pre>
+<p>Also: <code>sucata.scene.has_tag</code>, <code>sucata.scene.remove_tag</code>.</p>
+<h3 id="globalpersistent-entities">Global/persistent entities</h3>
+<p>For systems that should survive scene reloads (e.g. a "game manager" holding score across level transitions), use <code>sucata.scene.load_global(key, entity)</code> / <code>sucata.scene.get_global(key)</code> / <code>sucata.scene.unload_global(key)</code> instead of <code>spawn</code>.</p>
+<h3 id="events">Events</h3>
+<p>Simple pub/sub, decoupling systems (e.g. a meteor tells the game manager it reached the ground without knowing the game manager exists):</p>
+<pre><code class="language-lua">-- emitter (e.g. inside a meteor's tick)
+sucata.events.emit(&quot;meteor_reached&quot;, state)
+
+-- listener (e.g. inside the game manager's init)
+sucata.events.on(state, &quot;meteor_reached&quot;, function(meteor_state)
+  -- react
+end)
+</code></pre>
+<h3 id="timers">Timers</h3>
+<pre><code class="language-lua">sucata.time.create_timer(function()
+  sucata.scene.spawn(meteor())
+end, { time = 5, loop = true, auto_start = true })
+</code></pre>
+<p>Or the shorthand <code>sucata.time.create_timer(callback, seconds)</code> for a one-shot. Also: <code>sucata.time.pause_timer(id)</code>, <code>sucata.time.stop_timer(id)</code>, <code>sucata.time.get_delta()</code>, <code>sucata.time.get_fps()</code>, <code>sucata.time.get_time_scale()</code>/<code>set_time_scale()</code> (slow-mo / pause effects).</p>
+<h3 id="states-pattern-optional-but-recommended">"States" pattern (optional but recommended)</h3>
+<p>Plain modules of pure functions that mutate a piece of state, shareable across multiple behaviours instead of duplicating logic:</p>
+<pre><code class="language-lua">-- states/health.lua
+local function remove(state)
+  if not state.health then return end
+  state.health = state.health - 1
+end
+return { remove = remove }
+</code></pre>
+<p>Used from any behaviour: <code>local health = require("states.health"); health.remove(meteor)</code>.</p>
+<h2 id="rendering">Rendering</h2>
+<ul>
+<li><code>sucata.graphic.draw_rect(props)</code> and <code>sucata.graphic.draw_text(props)</code> are the <strong>only</strong> two draw primitives, and they may <strong>only be called inside a behaviour's <code>draw(state)</code> function</strong> — calling them elsewhere (init/tick) has no effect since drawing happens in a dedicated render pass.</li>
+<li>The engine batches all draw calls into one render queue per frame, grouped by <code>(z_index, texture, fixed, shader)</code>. For performance: reuse the <strong>same texture</strong> across similar sprites (use a texture atlas + <code>atlas_x</code>/<code>atlas_y</code>/<code>atlas_size</code> frame selection instead of many separate textures), and minimize the number of distinct <code>draw_text</code> calls.</li>
+<li><code>origin = 0.5</code> centers the sprite on <code>x,y</code> (default origin is <code>0,0</code> = top-left corner).</li>
+<li><code>fixed = true</code> on <code>RectProps</code>/<code>TextProps</code> renders relative to the screen, ignoring the camera (for UI/HUD).</li>
+<li>Texture atlas animation pattern (change frame based on state): set <code>atlas_x</code>/<code>atlas_y</code> in <code>tick</code>, e.g. <code>state.atlas_x = state.health - 1</code>.</li>
+<li>Camera: <code>sucata.camera.get_camera_position/set_camera_position</code>, <code>get_camera_rotation/set_camera_rotation</code>, <code>get_camera_zoom/set_camera_zoom</code> — moves/rotates/zooms the (non-fixed) world view.</li>
+<li>Custom shaders: <code>sucata.graphic.load_shader(path)</code> (loads a compiled <code>.schd</code>) → pass the returned id as <code>shader</code> in <code>draw_rect</code>/<code>draw_text</code> props, or <code>sucata.graphic.add_post_processing(shader_id)</code> for full-screen post-fx, tunable at runtime with <code>sucata.graphic.set_post_processing_args(shader_id, field, value)</code>.</li>
+</ul>
+<h2 id="input">Input</h2>
+<pre><code class="language-lua">if sucata.input.is_held(&quot;left&quot;, &quot;a&quot;) then ... end
+if sucata.input.is_pressed(&quot;space&quot;, &quot;enter&quot;) then ... end -- fires once, on the frame pressed
+</code></pre>
+<p><code>is_held</code>/<code>is_pressed</code>/<code>is_released</code> all take a variable number of key names (any match counts). Also: <code>sucata.input.get_mouse_position()</code>, <code>get_relative_mouse_position()</code> (camera-adjusted), <code>get_mouse_scroll()</code>, <code>get_key()</code>, and <code>sucata.input.is_hover({id, x, y, width, height, z_index?, fixed?})</code> for clickable UI regions (call every frame in <code>draw</code>; highest <code>z_index</code> wins on overlap).</p>
+<p>Gamepad mirrors the same shape: <code>sucata.gamepad.is_held/is_pressed/is_released(button, device?)</code>, <code>get_axis(axis, device?)</code>, <code>get_count()</code>, <code>get_info(device)</code>.</p>
+<h2 id="audio">Audio</h2>
+<pre><code class="language-lua">sucata.audio.play({ sound = &quot;src://sounds/shoot.ogg&quot; })
+local music_id = sucata.audio.play({ sound = &quot;src://sounds/music.ogg&quot;, loop = true, volume = 0.5 })
+</code></pre>
+<p>Returns a <code>sound_id</code> usable with <code>stop</code>/<code>pause</code>/<code>unpause</code>/<code>get_volume</code>/<code>set_volume</code>/<code>get_pitch</code>/<code>set_pitch</code>. Sounds can be mixed by <code>group</code> (default <code>"default"</code>), independently controllable via <code>get_group_volume</code>/<code>set_group_volume</code>/<code>get_group_pitch</code>/<code>set_group_pitch</code> (e.g. separate "sfx"/"music" groups).</p>
+<h2 id="filesystem">Filesystem</h2>
+<p><code>sucata.filesystem.*</code> (<code>exists</code>, <code>read_file</code>, <code>write</code>, <code>mkdir</code>, <code>remove</code>, <code>rename</code>, <code>read_dir</code>) work with the same virtual prefixes: <code>src://</code> (project root — read-only once built), <code>data://</code> (per-user writable directory — use this for save files/settings), <code>build://</code> (build output dir).</p>
+<h2 id="building">Building</h2>
+<pre><code class="language-bash">sucata build main.lua --icon src://icon.png
+</code></pre>
+<p>Under the hood: <code>sucata</code> (the CLI) walks your Lua <code>require</code>s and <code>src://</code> asset references, compiles the Lua to bytecode, LZ4-compresses everything into a single <code>assets.scta</code> archive, then copies the <code>sucata-player</code> runtime binary (+ needed DLLs) and appends a signature binding it to that exact <code>assets.scta</code>. The resulting executable loads its bundled assets on launch — no separate installer needed. Currently you can only build for the OS you're running on (no cross-compilation yet).</p>
+<h2 id="full-lua-api-condensed-reference">Full Lua API — condensed reference</h2>
+<p>Every module below is <code>sucata.&lt;module&gt;</code>. Full prose docs (with all fields/defaults) are under <a href="../references/sucata.audio/">References</a> in the sidebar.</p>
+<p><strong><code>sucata.scene</code></strong> — <code>load_scene(entities)</code>, <code>spawn(entity) -&gt; id</code>, <code>spawns(entities) -&gt; ids</code>, <code>find_by_id(id) -&gt; entity|nil</code>, <code>destroy(entity_or_id) -&gt; bool</code>, <code>destroys(entities) -&gt; undestroyed_ids</code>, <code>add_tag/has_tag/remove_tag(entity_or_id, tag)</code>, <code>get_entities() -&gt; ids</code>, <code>get_entities_by_tag(tag) -&gt; ids</code>, <code>clear_entities()</code>, <code>init(callback)</code> (run once scene starts), <code>load_global(key, entity) -&gt; id</code>, <code>get_global(key) -&gt; entity|nil</code>, <code>unload_global(key)</code>. <a href="../references/sucata.scene/">Full reference</a></p>
+<p><strong><code>sucata.graphic</code></strong> — <code>draw_rect(RectProps)</code>, <code>draw_text(TextProps)</code> (draw-phase only), <code>set_background_color(hex)</code>, <code>load_shader(path) -&gt; id|nil</code>, <code>add_post_processing(shader_id)</code>, <code>set_post_processing_args(shader_id, field, number|string|table)</code>, <code>remove_post_processing(shader_id)</code>. <code>RectProps</code>: <code>x,y,width,height,color,z_index,texture,scale(_x/_y),fixed,tiled,tile_size,tile_width,tile_height,origin(_x/_y),rotation,opacity,atlas_size,atlas_width,atlas_height,atlas_spacing,atlas_margin,atlas_x,atlas_y,shader,shader_args</code>. <code>TextProps</code>: <code>x,y,text,size,font,color,z_index,scale(_x/_y),fixed,origin(_x/_y),rotation,opacity,align,max_width,shader,shader_args</code>. <a href="../references/sucata.graphic/">Full reference</a></p>
+<p><strong><code>sucata.input</code></strong> — <code>is_pressed/is_held/is_released(...keys) -&gt; bool</code>, <code>get_mouse_position()/get_relative_mouse_position() -&gt; x,y</code>, <code>get_mouse_scroll() -&gt; x,y</code>, <code>get_key() -&gt; code</code>, <code>is_hover({id,x,y,width,height,z_index?,fixed?}) -&gt; bool</code>. <code>Key</code> values: <code>"mouse_left/right/middle"</code>, <code>"a"</code>–<code>"z"</code>, <code>"space"</code>/<code>" "</code>, <code>"escape"</code>/<code>"esc"</code>, <code>"enter"</code>/<code>"return"</code>, <code>"shift"</code>, <code>"ctrl"</code>/<code>"control"</code>, <code>"alt"</code>, <code>"apostrophe"</code>, <code>"tab"</code>, <code>"up"/"down"/"left"/"right"</code>. <a href="../references/sucata.input/">Full reference</a></p>
+<p><strong><code>sucata.gamepad</code></strong> — <code>get_count() -&gt; n</code>, <code>get_info(device) -&gt; name</code>, <code>get_axis(Axis, device?) -&gt; value, device_used</code>, <code>is_held/is_pressed/is_released(Button, device?) -&gt; bool, device_used</code>. <code>Axis</code>: <code>left_x/left_y/right_x/right_y/trigger_left/trigger_right</code>. <code>Button</code>: <code>a/b/x/y/back/guide/start/left_stick/right_stick/left_shoulder/right_shoulder/dpad_up/down/left/right</code>. <a href="../references/sucata.gamepad/">Full reference</a></p>
+<p><strong><code>sucata.audio</code></strong> — <code>play({sound,volume?,pitch?,group?,loop?}) -&gt; sound_id</code>, <code>stop/pause/unpause(sound_id)</code>, <code>get_volume/set_volume(sound_id[, v])</code>, <code>get_pitch/set_pitch(sound_id[, p])</code>, <code>get_group_volume/set_group_volume(group_id[, v])</code>, <code>get_group_pitch/set_group_pitch(group_id[, p])</code>. <a href="../references/sucata.audio/">Full reference</a></p>
+<p><strong><code>sucata.time</code></strong> — <code>get_delta() -&gt; seconds</code>, <code>get_fps() -&gt; n</code>, <code>create_timer(callback, seconds|Timer) -&gt; id</code>, <code>pause_timer(id)</code>, <code>stop_timer(id)</code>, <code>get_time_scale()/set_time_scale(scale)</code>. <code>Timer</code>: <code>{time, auto_start=true, one_shot=true, loop=false}</code>. <a href="../references/sucata.time/">Full reference</a></p>
+<p><strong><code>sucata.events</code></strong> — <code>emit(name, data)</code>, <code>on(owner, name, callback)</code>. <a href="../references/sucata.events/">Full reference</a></p>
+<p><strong><code>sucata.camera</code></strong> — <code>get/set_camera_position(x,y)</code>, <code>get/set_camera_rotation(radians)</code>, <code>get/set_camera_zoom(zoom)</code>. <a href="../references/sucata.camera/">Full reference</a></p>
+<p><strong><code>sucata.window</code></strong> — <code>get/set_mouse_lock(bool)</code>, <code>get/set_mouse_visible(bool)</code>, <code>get/set_window_title(str)</code>, <code>get/set_window_size(w,h)</code>, <code>get/set_fullscreen(bool)</code>, <code>get/set_vsync(n)</code>, <code>quit()</code>, <code>show_debug_info(bool)</code>, <code>get/set_keep_aspect(0|1|2)</code>, <code>get/set_window_icon(path)</code>, <code>get/set_cursor(name)</code>, <code>on_init(callback)</code>, <code>on_exit(callback)</code>. <a href="../references/sucata.window/">Full reference</a></p>
+<p><strong><code>sucata.filesystem</code></strong> — <code>exists(path) -&gt; bool</code>, <code>remove(path)</code>, <code>mkdir(path)</code>, <code>read_file(path) -&gt; str|nil</code>, <code>read_dir(path) -&gt; table|nil</code>, <code>write(path, content) -&gt; bool</code>, <code>rename(old, new)</code>. <a href="../references/sucata.filesystem/">Full reference</a></p>
+<p><strong><code>sucata.math</code></strong> — <code>clamp(v,min,max)</code>, <code>distance(p1,p2)</code>, <code>lerp(a,b,t)</code>, <code>overlapping(Rect,Rect) -&gt; bool, intersection|nil</code>, <code>screen_relative(ScreenRelativeRect) -&gt; x,y,w,h</code>, <code>smooth_index(current_time, interval, max_index) -&gt; index</code>, <code>normalize(...) -&gt; ...</code>, <code>move_towards(current, target, step)</code>. <a href="../references/sucata.math/">Full reference</a></p>
+<p><strong><code>sucata.meta</code></strong> — <code>OS</code> (string), <code>VERSION</code> (string). <a href="../references/sucata.meta/">Full reference</a></p>
+<h2 id="gotchas-checklist">Gotchas checklist</h2>
+<ul>
+<li>Only call <code>sucata.graphic.draw_*</code> from inside <code>draw(state)</code>.</li>
+<li>Always route behaviours through one shared table (<code>Behaviours = require("behaviours")</code>), never <code>require</code> a behaviour module fresh in multiple files.</li>
+<li>Behaviours execute in the order listed on the entity — order logic before rendering.</li>
+<li><code>init</code>/<code>tick</code>/<code>draw</code>/<code>free</code> are all optional — omit what you don't need.</li>
+<li>Use <code>state.x = state.x or default</code> in <code>init</code> to make fields optional with sane defaults when constructing entities.</li>
+<li>Prefer one texture/atlas over many separate images, and batch text draws, for render performance.</li>
+<li>Use <code>src://</code> for bundled read-only assets, <code>data://</code> for writable save data.</li>
+<li>Disable <code>sucata.window.show_debug_info</code> before shipping.</li>
+</ul>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="../getting-started/first-project/overview/">First Project tutorial</a> — the full step-by-step Asteroids-style walkthrough this guide is distilled from.</li>
+<li><a href="../cli/">CLI reference</a></li>
+<li><a href="../references/sucata.audio/">API references</a></li>
+<li><a href="https://github.com/sucata-engine/meteors-sucata">meteors-sucata</a> — complete example game source.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["search.suggest", "search.highlight", "search.share", "navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.path", "navigation.expand", "navigation.top", "navigation.tracking", "navigation.indexes"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

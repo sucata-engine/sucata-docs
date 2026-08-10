@@ -732,6 +732,33 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -771,10 +798,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
             
   
   
@@ -792,8 +819,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1557,11 +1584,14 @@
 - scale_y? <code>number</code> - Scale factor on Y axis (default: 1.0)<br />
 - fixed? <code>boolean</code> - Whether the rectangle is fixed to the screen (default: false)<br />
 - tiled? <code>boolean</code> - Whether the texture should be tiled (default: false)<br />
+- tile_size? <code>number</code> - Uniform tile size for tiling (default: 0.0)<br />
+- tile_width? <code>number</code> - Tile width on X axis for tiling (default: 0.0)<br />
+- tile_height? <code>number</code> - Tile height on Y axis for tiling (default: 0.0)<br />
 - origin? <code>number</code> - Uniform origin point (default: 0.0)<br />
 - origin_x? <code>number</code> - Origin point on X axis (default: 0.0)<br />
 - origin_y? <code>number</code> - Origin point on Y axis (default: 0.0)<br />
 - rotation? <code>number</code> - Rotation in radians (default: 0.0)<br />
-- opacity? <code>number</code> - Opacity value from 0.0 to 1.0 (default: 1.0)<br />
+- opacity? <code>number</code> - Opacity value from 0.0 to 1.0 (default: the alpha channel of <code>color</code>)<br />
 - atlas_size? <code>number</code> - Size of the texture atlas (default: 0.0)<br />
 - atlas_width? <code>number</code> - Width of each frame in the texture atlas (default: 0.0)<br />
 - atlas_height? <code>number</code> - Height of each frame in the texture atlas (default: 0.0)<br />
@@ -1590,7 +1620,7 @@
 - origin_x? <code>number</code> - Origin point on X axis (default: 0.0)<br />
 - origin_y? <code>number</code> - Origin point on Y axis (default: 0.0)<br />
 - rotation? <code>number</code> - Rotation in radians (default: 0.0)<br />
-- opacity? <code>number</code> - Opacity value from 0.0 to 1.0 (default: 1.0)<br />
+- opacity? <code>number</code> - Opacity value from 0.0 to 1.0 (default: the alpha channel of <code>color</code>)<br />
 - align? <code>string</code> - Text alignment: <code>"left"</code>, <code>"center"</code>, or <code>"right"</code> (default: <code>"left"</code>)<br />
 - max_width? <code>number</code> - Maximum width of the text (default: 0.0)<br />
 - shader? <code>number</code> - ID of the shader to use, returned by <code>load_shader</code> (default: 0)<br />
@@ -1641,7 +1671,7 @@
 <ul>
 <li>shader_id <code>number</code> - The shader ID of the post-processing effect  </li>
 <li>field <code>string</code> - The name of the shader argument to set  </li>
-<li>value <code>number | table</code> - The value to set (<code>number</code> for float, <code>table</code> of 2/3/4 numbers for vec2/vec3/vec4)  </li>
+<li>value <code>number | string | table</code> - The value to set (<code>number</code> for float, <code>string</code> for string uniform, <code>table</code> of 2/3/4 numbers for vec2/vec3/vec4)  </li>
 </ul>
 <hr />
 <h2 id="sucatagraphicremove_post_processing">sucata.graphic.remove_post_processing</h2>
