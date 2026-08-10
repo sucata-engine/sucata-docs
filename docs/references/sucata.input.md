@@ -24,11 +24,12 @@ Input key and button names.
 - `"ctrl"`
 - `"control"`
 - `"alt"`
+- `"apostrophe"`
+- `"tab"`
 - `"up"`
 - `"down"`
 - `"left"`
 - `"right"`
-- `"tab"`
 
 ---
 

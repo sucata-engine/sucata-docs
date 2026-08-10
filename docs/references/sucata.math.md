@@ -9,10 +9,10 @@ The math module of the Sucata.
 Represents a rectangle in 2D space.
 
 **fields**
-- x `number` - The x position  
-- y `number` - The y position  
-- width `number` - The width  
-- height `number` - The height  
+- x? `number` - The x position (default: 0)  
+- y? `number` - The y position (default: 0)  
+- width? `number` - The width (default: 1)  
+- height? `number` - The height (default: 1)  
 
 ---
 

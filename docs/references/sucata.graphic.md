@@ -21,11 +21,14 @@ Properties used to draw a rectangle.
 - scale_y? `number` - Scale factor on Y axis (default: 1.0)  
 - fixed? `boolean` - Whether the rectangle is fixed to the screen (default: false)  
 - tiled? `boolean` - Whether the texture should be tiled (default: false)  
+- tile_size? `number` - Uniform tile size for tiling (default: 0.0)  
+- tile_width? `number` - Tile width on X axis for tiling (default: 0.0)  
+- tile_height? `number` - Tile height on Y axis for tiling (default: 0.0)  
 - origin? `number` - Uniform origin point (default: 0.0)  
 - origin_x? `number` - Origin point on X axis (default: 0.0)  
 - origin_y? `number` - Origin point on Y axis (default: 0.0)  
 - rotation? `number` - Rotation in radians (default: 0.0)  
-- opacity? `number` - Opacity value from 0.0 to 1.0 (default: 1.0)  
+- opacity? `number` - Opacity value from 0.0 to 1.0 (default: the alpha channel of `color`)  
 - atlas_size? `number` - Size of the texture atlas (default: 0.0)  
 - atlas_width? `number` - Width of each frame in the texture atlas (default: 0.0)  
 - atlas_height? `number` - Height of each frame in the texture atlas (default: 0.0)  
@@ -58,7 +61,7 @@ Properties used to draw text.
 - origin_x? `number` - Origin point on X axis (default: 0.0)  
 - origin_y? `number` - Origin point on Y axis (default: 0.0)  
 - rotation? `number` - Rotation in radians (default: 0.0)  
-- opacity? `number` - Opacity value from 0.0 to 1.0 (default: 1.0)  
+- opacity? `number` - Opacity value from 0.0 to 1.0 (default: the alpha channel of `color`)  
 - align? `string` - Text alignment: `"left"`, `"center"`, or `"right"` (default: `"left"`)  
 - max_width? `number` - Maximum width of the text (default: 0.0)  
 - shader? `number` - ID of the shader to use, returned by `load_shader` (default: 0)  
@@ -128,7 +131,7 @@ Sets a parameter on an active post-processing shader.
 
 - shader_id `number` - The shader ID of the post-processing effect  
 - field `string` - The name of the shader argument to set  
-- value `number | table` - The value to set (`number` for float, `table` of 2/3/4 numbers for vec2/vec3/vec4)  
+- value `number | string | table` - The value to set (`number` for float, `string` for string uniform, `table` of 2/3/4 numbers for vec2/vec3/vec4)  
 
 ---
 

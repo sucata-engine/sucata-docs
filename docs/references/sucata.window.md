@@ -209,3 +209,23 @@ Gets the current mouse cursor name.
 **return**
 
 - cursor_name `string` - The name of the current cursor style  
+
+---
+
+## sucata.window.on_init
+
+Registers a callback to run when the window/game initializes.
+
+**parameters**
+
+- callback `function` - The function to call on init  
+
+---
+
+## sucata.window.on_exit
+
+Registers a callback to run when the window/game is about to exit.
+
+**parameters**
+
+- callback `function` - The function to call on exit  
