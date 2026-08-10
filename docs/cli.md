@@ -19,6 +19,7 @@ Builds Sucata into a binary game for the current OS
 
 - <file> - It is the path of the main lua file 
 - --icon <path> (optional) - It is the icon for your game
+- --optimize (optional) - Recompresses opaque images (PNG/BMP/TGA without an alpha channel) as JPEG to shrink the packaged assets. Images with transparency are left untouched, and dimensions are never changed.
 
 > For while, this is a Sucata limitation, you can only build the game for the current OS.
 
