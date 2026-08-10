@@ -126,6 +126,26 @@ Gets the current vsync mode.
 
 ---
 
+## sucata.window.set_max_fps
+
+Sets a hard cap on the frame rate, applied independently of vsync. Useful because vsync throttling is not reliable on every platform/driver combination — this guarantees an upper bound on CPU/GPU usage regardless. Defaults to `60`. Pass `0` (or a negative number) to disable the cap and rely solely on vsync.
+
+**parameters**
+
+- max_fps `number` - The maximum frames per second (`0` disables the cap)  
+
+---
+
+## sucata.window.get_max_fps
+
+Gets the current max FPS cap.
+
+**return**
+
+- max_fps `number` - The current max FPS cap (`0` means no cap)  
+
+---
+
 ## sucata.window.quit
 
 Quits the application.
