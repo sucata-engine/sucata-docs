@@ -48,6 +48,7 @@ nav:
           - Playing sounds: getting-started/first-project/playing-sounds.md
   - Examples: examples.md
   - CLI: cli.md
+  - Agent Guide: agent-guide.md
   - References:
     - sucata.audio: references/sucata.audio.md
     - sucata.camera: references/sucata.camera.md
