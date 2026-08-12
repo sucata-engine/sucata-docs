@@ -1367,6 +1367,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#sucatawindowset_max_fps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.window.set_max_fps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatawindowget_max_fps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.window.get_max_fps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#sucatawindowquit" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1705,6 +1727,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#sucatawindowset_max_fps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.window.set_max_fps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatawindowget_max_fps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.window.get_max_fps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#sucatawindowquit" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1969,6 +2013,20 @@
 <p><strong>return</strong></p>
 <ul>
 <li>vsync <code>number</code> - The current vsync mode  </li>
+</ul>
+<hr />
+<h2 id="sucatawindowset_max_fps">sucata.window.set_max_fps</h2>
+<p>Sets a hard cap on the frame rate, applied independently of vsync. Useful because vsync throttling is not reliable on every platform/driver combination — this guarantees an upper bound on CPU/GPU usage regardless. Defaults to <code>60</code>. Pass <code>0</code> (or a negative number) to disable the cap and rely solely on vsync.</p>
+<p><strong>parameters</strong></p>
+<ul>
+<li>max_fps <code>number</code> - The maximum frames per second (<code>0</code> disables the cap)  </li>
+</ul>
+<hr />
+<h2 id="sucatawindowget_max_fps">sucata.window.get_max_fps</h2>
+<p>Gets the current max FPS cap.</p>
+<p><strong>return</strong></p>
+<ul>
+<li>max_fps <code>number</code> - The current max FPS cap (<code>0</code> means no cap)  </li>
 </ul>
 <hr />
 <h2 id="sucatawindowquit">sucata.window.quit</h2>

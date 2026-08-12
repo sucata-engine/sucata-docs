@@ -1165,6 +1165,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#sucatagraphicpreload_texture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.graphic.preload_texture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatagraphicget_hot_texture_threshold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.graphic.get_hot_texture_threshold
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatagraphicset_hot_texture_threshold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.graphic.set_hot_texture_threshold
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1528,6 +1561,39 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#sucatagraphicpreload_texture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.graphic.preload_texture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatagraphicget_hot_texture_threshold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.graphic.get_hot_texture_threshold
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatagraphicset_hot_texture_threshold" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.graphic.set_hot_texture_threshold
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1606,7 +1672,7 @@
 - y? <code>number</code> - The y position (default: 0)<br />
 - width? <code>number</code> - The width (default: 50)<br />
 - height? <code>number</code> - The height (default: 50)<br />
-- color? <code>string</code> - The color in hex format (default: "#ffffff")<br />
+- color? <code>{r, g, b, a?}</code> - RGBA color as a table of numbers 0.0-1.0; <code>a</code> is optional and defaults to 1.0 (default: <code>{1, 1, 1, 1}</code>)<br />
 - z_index? <code>number</code> - The z-index for layering (default: 0)<br />
 - texture? <code>string</code> - Path to texture file (default: "")<br />
 - scale? <code>number</code> - Uniform scale factor (default: 1.0)<br />
@@ -1640,7 +1706,7 @@
 - text? <code>string</code> - The text to display (default: "")<br />
 - size? <code>number</code> - The font size (default: 16)<br />
 - font? <code>string</code> - Path to font file (default: "")<br />
-- color? <code>string</code> - The color in hex format (default: "#ffffff")<br />
+- color? <code>{r, g, b, a?}</code> - RGBA color as a table of numbers 0.0-1.0; <code>a</code> is optional and defaults to 1.0 (default: <code>{1, 1, 1, 1}</code>)<br />
 - z_index? <code>number</code> - The z-index for layering (default: 0)<br />
 - scale? <code>number</code> - Uniform scale factor (default: 1.0)<br />
 - scale_x? <code>number</code> - Scale factor on X axis (default: 1.0)<br />
@@ -1674,7 +1740,7 @@
 <p>Sets the background color of the window.</p>
 <p><strong>parameters</strong></p>
 <ul>
-<li>color <code>string</code> - Hex color string (e.g., <code>"#RRGGBB"</code> or <code>"#RRGGBBAA"</code>)  </li>
+<li>color <code>{r, g, b, a?}</code> - RGBA color as a table of numbers 0.0-1.0; <code>a</code> is optional and defaults to 1.0  </li>
 </ul>
 <hr />
 <h2 id="sucatagraphicload_shader">sucata.graphic.load_shader</h2>
@@ -1709,6 +1775,27 @@
 <p><strong>parameters</strong></p>
 <ul>
 <li>shader_id <code>number</code> - The shader ID of the post-processing effect to remove  </li>
+</ul>
+<hr />
+<h2 id="sucatagraphicpreload_texture">sucata.graphic.preload_texture</h2>
+<p>Loads a texture immediately and marks it "hot", so it's exempt from the automatic per-frame unloading of textures not drawn that frame — it stays resident in GPU memory for the rest of the run. Useful for textures you know will be reused heavily (UI, atlases) and want to avoid reload costs for, without waiting for the automatic hot-texture promotion to kick in.</p>
+<p><strong>parameters</strong></p>
+<ul>
+<li>path <code>string</code> - File path to the texture to preload  </li>
+</ul>
+<hr />
+<h2 id="sucatagraphicget_hot_texture_threshold">sucata.graphic.get_hot_texture_threshold</h2>
+<p>Gets the number of draws after which a texture is automatically promoted to "hot" (see <code>preload_texture</code>) and stops being unloaded when not drawn in a frame.</p>
+<p><strong>return</strong></p>
+<ul>
+<li>threshold <code>number</code> - The current hot-texture use threshold (default: 300)  </li>
+</ul>
+<hr />
+<h2 id="sucatagraphicset_hot_texture_threshold">sucata.graphic.set_hot_texture_threshold</h2>
+<p>Sets the number of draws after which a texture is automatically promoted to "hot". Applies going forward — it doesn't retroactively promote or demote already-loaded textures. Pass <code>0</code> to disable this automatic use-count promotion entirely — textures then only become hot through an explicit <code>preload_texture</code> call.</p>
+<p><strong>parameters</strong></p>
+<ul>
+<li>threshold <code>number</code> - The new hot-texture use threshold, or <code>0</code> to disable automatic promotion (minimum 0)  </li>
 </ul>
 
 
