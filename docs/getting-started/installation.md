@@ -14,7 +14,7 @@ dependencies.
 2. Run the following command:
 
 ```powershell
-irm https://github.com/sucata-engine/sucata/raw/branch/main/install_windows.ps1 | iex
+irm https://raw.githubusercontent.com/sucata-engine/sucata-engine/refs/heads/main/install_windows.ps1 | iex
 ```
 
 3. Restart your terminal.
@@ -30,7 +30,7 @@ irm https://github.com/sucata-engine/sucata/raw/branch/main/install_windows.ps1 
 2. Run the following command:
 
 ```bash
-curl -fsSL https://github.com/sucata-engine/sucata/raw/branch/main/install_unix.sh | bash
+curl -fsSL https://raw.githubusercontent.com/sucata-engine/sucata-engine/refs/heads/main/install_unix.sh | bash
 ```
 
 3. Restart your terminal.
