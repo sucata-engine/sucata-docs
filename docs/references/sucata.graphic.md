@@ -13,7 +13,7 @@ Properties used to draw a rectangle.
 - y? `number` - The y position (default: 0)  
 - width? `number` - The width (default: 50)  
 - height? `number` - The height (default: 50)  
-- color? `string` - The color in hex format (default: "#ffffff")  
+- color? `{r, g, b, a?}` - RGBA color as a table of numbers 0.0-1.0; `a` is optional and defaults to 1.0 (default: `{1, 1, 1, 1}`)  
 - z_index? `number` - The z-index for layering (default: 0)  
 - texture? `string` - Path to texture file (default: "")  
 - scale? `number` - Uniform scale factor (default: 1.0)  
@@ -51,7 +51,7 @@ Properties used to draw text.
 - text? `string` - The text to display (default: "")  
 - size? `number` - The font size (default: 16)  
 - font? `string` - Path to font file (default: "")  
-- color? `string` - The color in hex format (default: "#ffffff")  
+- color? `{r, g, b, a?}` - RGBA color as a table of numbers 0.0-1.0; `a` is optional and defaults to 1.0 (default: `{1, 1, 1, 1}`)  
 - z_index? `number` - The z-index for layering (default: 0)  
 - scale? `number` - Uniform scale factor (default: 1.0)  
 - scale_x? `number` - Scale factor on X axis (default: 1.0)  
@@ -95,7 +95,7 @@ Sets the background color of the window.
 
 **parameters**
 
-- color `string` - Hex color string (e.g., `"#RRGGBB"` or `"#RRGGBBAA"`)  
+- color `{r, g, b, a?}` - RGBA color as a table of numbers 0.0-1.0; `a` is optional and defaults to 1.0  
 
 ---
 
@@ -142,3 +142,33 @@ Removes an active post-processing effect.
 **parameters**
 
 - shader_id `number` - The shader ID of the post-processing effect to remove  
+
+---
+
+## sucata.graphic.preload_texture
+
+Loads a texture immediately and marks it "hot", so it's exempt from the automatic per-frame unloading of textures not drawn that frame — it stays resident in GPU memory for the rest of the run. Useful for textures you know will be reused heavily (UI, atlases) and want to avoid reload costs for, without waiting for the automatic hot-texture promotion to kick in.
+
+**parameters**
+
+- path `string` - File path to the texture to preload  
+
+---
+
+## sucata.graphic.get_hot_texture_threshold
+
+Gets the number of draws after which a texture is automatically promoted to "hot" (see `preload_texture`) and stops being unloaded when not drawn in a frame.
+
+**return**
+
+- threshold `number` - The current hot-texture use threshold (default: 300)  
+
+---
+
+## sucata.graphic.set_hot_texture_threshold
+
+Sets the number of draws after which a texture is automatically promoted to "hot". Applies going forward — it doesn't retroactively promote or demote already-loaded textures. Pass `0` to disable this automatic use-count promotion entirely — textures then only become hot through an explicit `preload_texture` call.
+
+**parameters**
+
+- threshold `number` - The new hot-texture use threshold, or `0` to disable automatic promotion (minimum 0)  
