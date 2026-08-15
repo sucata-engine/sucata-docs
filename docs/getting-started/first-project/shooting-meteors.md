@@ -5,17 +5,24 @@ In this section we will create bullets and implement the logic required to destr
 
 ---
 
-## Creating the Bullet Behaviour
+## Creating the Bullet Behaviours
 
-First, create the bullet behaviour in `behaviours/bullet.lua`:
+Bullets need two behaviours of their own, so they go in `behaviours/bullet/`.
+
+The first one shoots the bullet upwards and cleans it up when it leaves the screen.
+
+Create the file `behaviours/bullet/shot.lua`:
 
 ```lua
-local health = require("states.health")
+local mutators = require("mutators")
 
+---@type Behaviour
 return {
 	init = function(state)
 		state.speed = state.speed or 400 -- Bullet speed (default: 400)
-		state.force_y = -state.speed -- Apply upward force
+
+		-- Named force, pointing up
+		mutators.forces.set_force(state, "shot", { x = 0, y = -state.speed })
 	end,
 
 	tick = function(state)
@@ -23,7 +30,20 @@ return {
 		if state.y < -16 then
 			sucata.scene.destroy(state)
 		end
+	end
+}
+```
 
+The second one handles the collision against every meteor.
+
+Create the file `behaviours/bullet/hit_meteor.lua`:
+
+```lua
+local mutators = require("mutators")
+
+---@type Behaviour
+return {
+	tick = function(state)
 		-- Get all meteors in the scene
 		local meteors = sucata.scene.get_entities_by_tag("meteor")
 
@@ -42,9 +62,9 @@ return {
 				height = 32
 			}) then
 				-- Damage the meteor
-				health.remove(meteor)
+				mutators.health.remove(meteor)
 
-				if meteor.health <= 0 then
+				if mutators.health.is_dead(meteor) then
 					sucata.events.emit("meteor_destroyed", meteor)
 					sucata.scene.destroy(meteor)
 				end
@@ -58,12 +78,32 @@ return {
 }
 ```
 
-Register the behaviour in `behaviours/init.lua`:
+> **Note**
+> The bullet never writes `meteor.health` itself — it goes through `mutators.health`, the same
+> module the game manager uses. That's the point of mutators: one place per slice of state.
+
+Create the subfolder aggregator `behaviours/bullet/init.lua`:
+
+```lua
+-- Behaviours only bullets use.
+return {
+	hit_meteor = require("behaviours.bullet.hit_meteor"),
+	shot       = require("behaviours.bullet.shot"),
+}
+```
+
+And expose it in `behaviours/init.lua`:
 
 ```lua
 return {
-	...
-	Bullet = require("behaviours.bullet"),
+	draw_sprite           = require("behaviours.draw_sprite"),
+	forces                = require("behaviours.forces"),
+	random_start_position = require("behaviours.random_start_position"),
+
+	bullet       = require("behaviours.bullet"),
+	game_manager = require("behaviours.game_manager"),
+	meteor       = require("behaviours.meteor"),
+	player       = require("behaviours.player"),
 }
 ```
 
@@ -74,7 +114,10 @@ return {
 Now create the bullet entity in `entities/bullet.lua`:
 
 ```lua
+local behaviours = require("behaviours")
+
 local function bullet(x, y)
+	---@type Entity
 	return {
 		state = {
 			x = x,
@@ -82,9 +125,10 @@ local function bullet(x, y)
 		},
 
 		behaviours = {
-			Behaviours.Bullet,      -- Bullet logic
-			Behaviours.ApplyForces, -- Apply movement forces
-			Behaviours.DrawSprite   -- Render the bullet
+			behaviours.forces,            -- Before bullet.shot, which pushes a force on init
+			behaviours.bullet.shot,       -- Upward force and offscreen cleanup
+			behaviours.bullet.hit_meteor, -- Collision against every meteor
+			behaviours.draw_sprite,       -- Render the bullet
 		}
 	}
 end
@@ -96,28 +140,32 @@ return bullet
 
 ## Creating the Shooter Behaviour
 
-Now we will allow the player to shoot bullets.
+Now we will allow the player to shoot bullets. This one belongs to the player.
 
-Create the file `behaviours/shooter.lua`:
+Create the file `behaviours/player/shooter.lua`:
 
 ```lua
-local bullet = require("entities.bullet")
+-- Required lazily: entities require the behaviours aggregator, so requiring an entity
+-- while `behaviours/init.lua` is still running would re-enter it.
+local bullet
 
+---@type Behaviour
 return {
 	tick = function(state)
 		if sucata.input.is_pressed("space", "enter") then
+			bullet = bullet or require("entities.bullet")
 			sucata.scene.spawn(bullet(state.x, state.y - 16))
 		end
 	end
 }
 ```
 
-Register the behaviour in `behaviours/init.lua`:
+Register the behaviour in `behaviours/player/init.lua`:
 
 ```lua
 return {
-	...
-	Shooter = require("behaviours.shooter"),
+	controller = require("behaviours.player.controller"),
+	shooter    = require("behaviours.player.shooter"),
 }
 ```
 
@@ -128,7 +176,10 @@ return {
 Now add the shooter behaviour to the player entity in `entities/player.lua`:
 
 ```lua
+local behaviours = require("behaviours")
+
 local function player(x, y)
+	---@type Entity
 	return {
 		state = {
 			x = x,
@@ -136,9 +187,10 @@ local function player(x, y)
 		},
 
 		behaviours = {
-			Behaviours.Player,   -- Player movement
-			Behaviours.Shooter,  -- Shooting logic
-			Behaviours.DrawSprite -- Render player
+			behaviours.forces,
+			behaviours.player.controller, -- Player movement
+			behaviours.player.shooter,    -- Shooting logic
+			behaviours.draw_sprite,       -- Render player
 		}
 	}
 end

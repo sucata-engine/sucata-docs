@@ -37,6 +37,10 @@ You can define a list of behaviours that will be executed to changed state
 
 Behaviour is a table with a collections of stateless functions, that recieve an state and changes it, the design of the behaviour it is to be modular, small scripts that can be reused in many entities
 
+> Sucata reuses behaviours that share the same Lua table *pointer identity*, so every behaviour is
+> defined once, in its own file, and reached through an aggregator `init.lua` — see
+> [Aggregators](#aggregators) below.
+
 #### init(state)
 
 Called when the scene is loaded
@@ -60,7 +64,7 @@ use it to update the entity's data.
 
 Called every frame to draw the entity
 
-Normally used to draw graphics for the entity, using `sucata.graphics`
+Normally used to draw graphics for the entity, using `sucata.graphic`
 functions.
 
 > This function is optional, and you can omit it if you don't need to draw any
@@ -76,13 +80,74 @@ the scene.
 > This function is optional, and you can omit it if you don't need to execute
 > any command before the entity is removed from the scene.
 
+## Aggregators
+
+A folder of modules is always reached through its `init.lua`, which re-exports every module under a
+key equal to its file name. `behaviours/init.lua` and `mutators/init.lua` are the only entry points
+into those trees:
+
+```lua
+-- behaviours/init.lua — generic behaviours + one key per entity subfolder
+return {
+	draw_sprite = require("behaviours.draw_sprite"),
+	forces      = require("behaviours.forces"),
+
+	player = require("behaviours.player"), -- resolves to behaviours/player/init.lua
+}
+```
+
+```lua
+-- any entity that needs one
+local behaviours = require("behaviours")
+
+local entity_behaviours = {
+	behaviours.player.controller, -- entity-specific, from behaviours/player/
+	behaviours.draw_sprite,       -- generic, from behaviours/
+}
+```
+
+`require` caches by module name, so every file gets the exact same tables and behaviour reuse holds
+— but only if nothing bypasses the aggregator with a direct `require("behaviours.player.controller")`.
+
+A behaviour only one entity will ever use goes in `behaviours/<entity>/`; one any entity could reuse
+stays at the top level of `behaviours/`.
+
+## Mutators
+
+`mutators/` holds plain modules of stateless functions that read and mutate **one named slice** of
+an entity's state, so multiple behaviours share the logic instead of duplicating it. They are the
+only thing that should touch that slice.
+
+```lua
+local mutators = require("mutators")
+
+mutators.forces.set_force(state, "jump", { x = 0, y = state.jump_force })
+mutators.health.remove(meteor)
+```
+
+Mutators guard defensively (`if not state.forces then return end`), since they can run against an
+entity whose behaviour list never initialised that slice.
+
+## Commons
+
+`commons/` holds data-only modules: enums and constants shared across behaviours, entities and
+mutators. No functions, no state.
+
+```lua
+-- commons/screen.lua
+return { WIDTH = 960, HEIGHT = 540, MARGIN = 16 }
+```
+
+Since each constant set is independent, these are required directly by file:
+`local screen = require("commons.screen")`.
+
 ## Rendering
 
 ### Render functions
 
 Sucata have two functions to draw graphics: 
-- `sucata.graphic.rect({})` - Used to render rectangules, it can have textures
-- `sucata.graphic.text({})` - Used to render texts using a font, or default font from the system
+- `sucata.graphic.draw_rect({})` - Used to render rectangules, it can have textures
+- `sucata.graphic.draw_text({})` - Used to render texts using a font, or default font from the system
 
 > Render functions can only be called on draw() function from a behaviour
 
@@ -109,7 +174,7 @@ reference them, and create relationships between them.
 For example:
 
 ```lua
-local children_id = sucata.scene.spawn(Bullet())
+local children_id = sucata.scene.spawn(bullet())
 self.children = children_id
 ```
 
@@ -125,7 +190,7 @@ bullet_entity.y = self.y
 
 ## Building
 
-To build your game in sucata you can run `sucata build .` and build the game for the operational system you are using
+To build your game in sucata you can run `sucata build main.lua` and build the game for the operational system you are using
 
 > For now, while has a limitation that you can't cross build, but we plan to make cross build in the future
 

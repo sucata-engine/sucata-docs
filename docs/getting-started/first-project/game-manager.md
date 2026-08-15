@@ -6,39 +6,71 @@ Now we will create a **Game Manager**, responsible for managing core game system
 - Player health
 - Player points
 
+All of its behaviours are specific to this entity, so they live in `behaviours/game_manager/`.
+
 ---
 
 ## Meteor Spawner
 
 First, we will create a system that spawns a new meteor every **5 seconds**.
 
-Create the file `behaviours/meteor_spawner.lua`:
+Create the file `behaviours/game_manager/meteor_spawner.lua`:
 
 ```lua
-local meteor = require("entities.meteor")
+-- Required lazily: entities require the behaviours aggregator, so requiring an entity
+-- while `behaviours/init.lua` is still running would re-enter it.
+local meteor
 
+---@type Behaviour
 return {
 	init = function(state)
-		state.spawner_time = state.spawner_time or 5 -- Time between meteor spawns
+		state.spawner_time = state.spawner_time or 5 -- Seconds between meteor spawns
 
 		-- Create a timer that spawns meteors
-		sucata.time.create_timer(function ()
+		state.spawner_timer_id = sucata.time.create_timer(function()
+			meteor = meteor or require("entities.meteor")
 			sucata.scene.spawn(meteor())
 		end, {
 			time = state.spawner_time,
 			loop = true,
 			auto_start = true
 		})
+	end,
+
+	free = function(state)
+		if state.spawner_timer_id then
+			-- Stop spawning once the game manager is gone (e.g. game over)
+			sucata.time.stop_timer(state.spawner_timer_id)
+		end
 	end
 }
 ```
 
-Register the behaviour in `behaviours/init.lua`:
+> **Important**
+> Behaviours must never `require` an entity at the top of the file. `behaviours/init.lua` is loaded
+> first, and entities require it back — requiring an entity while the aggregator is still building
+> would re-enter it. Require it lazily inside `init`/`tick` instead, as above.
+
+Create the subfolder aggregator `behaviours/game_manager/init.lua`:
+
+```lua
+-- Behaviours only the game manager uses.
+return {
+	meteor_spawner = require("behaviours.game_manager.meteor_spawner"),
+}
+```
+
+And expose it in `behaviours/init.lua`:
 
 ```lua
 return {
-	...
-	MeteorSpawner = require("behaviours.meteor_spawner")
+	draw_sprite           = require("behaviours.draw_sprite"),
+	forces                = require("behaviours.forces"),
+	random_start_position = require("behaviours.random_start_position"),
+
+	game_manager = require("behaviours.game_manager"),
+	meteor       = require("behaviours.meteor"),
+	player       = require("behaviours.player"),
 }
 ```
 
@@ -46,15 +78,19 @@ return {
 
 ## Game Manager Entity
 
-Now we will create the **Game Manager entity**.
+Now we will create the **Game Manager entity**. It has no position, so it's a plain table instead
+of a factory function.
 
 Create the file `entities/game_manager.lua`:
 
 ```lua
+local behaviours = require("behaviours")
+
+---@type Entity
 return {
 	state = {},
 	behaviours = {
-		Behaviours.MeteorSpawner
+		behaviours.game_manager.meteor_spawner,
 	}
 }
 ```
@@ -73,39 +109,58 @@ sucata.scene.spawn(game_manager)
 
 Now we will implement the player's health system.
 
-First, create a state module in `states/player_health.lua`:
+Health is another slice of the entity state, so it gets its own mutator.
+
+Create `mutators/health.lua`:
 
 ```lua
-local function remove(state)
+local function remove(state, amount)
 	if not state.health then -- Safe state modification
 		return
 	end
 
-	state.health = state.health - 1
+	state.health = state.health - (amount or 1)
+end
+
+local function is_dead(state)
+	return (state.health or 0) <= 0
 end
 
 return {
-	remove = remove
+	remove = remove,
+	is_dead = is_dead,
+}
+```
+
+Register it in `mutators/init.lua`:
+
+```lua
+return {
+	forces = require("mutators.forces"),
+	health = require("mutators.health"),
 }
 ```
 
 > **Note**
-> *States* are modules that contain logic for modifying entity state.
-> They can be called from any behaviour.
+> *Mutators* are modules of stateless functions that read and mutate **one named slice** of an
+> entity's state. They are the only thing that should touch that slice, so the same logic can be
+> shared by any behaviour instead of being duplicated.
 
-Now create the behaviour `behaviours/player_health.lua`:
+Now create the behaviour `behaviours/game_manager/player_health.lua`:
 
 ```lua
-local health = require("states.health")
+local mutators = require("mutators")
 
+---@type Behaviour
 return {
 	init = function(state)
 		state.health = state.health or 3 -- Default player health
 
+		-- "meteor_reached" is emitted by behaviours.meteor.fall
 		sucata.events.on(state, "meteor_reached", function(_)
-			health.remove(state)
+			mutators.health.remove(state)
 
-			if state.health <= 0 then
+			if mutators.health.is_dead(state) then
 				-- Game over logic (to be implemented)
 			end
 		end)
@@ -113,23 +168,26 @@ return {
 }
 ```
 
-Register the behaviour in `behaviours/init.lua`:
+Register the behaviour in `behaviours/game_manager/init.lua`:
 
 ```lua
 return {
-	...
-	PlayerHealth = require("behaviours.player_health")
+	meteor_spawner = require("behaviours.game_manager.meteor_spawner"),
+	player_health  = require("behaviours.game_manager.player_health"),
 }
 ```
 
 Add it to the Game Manager in `entities/game_manager.lua`:
 
 ```lua
+local behaviours = require("behaviours")
+
+---@type Entity
 return {
 	state = {},
 	behaviours = {
-		Behaviours.PlayerHealth,
-		Behaviours.MeteorSpawner
+		behaviours.game_manager.player_health,
+		behaviours.game_manager.meteor_spawner,
 	}
 }
 ```
@@ -138,12 +196,12 @@ return {
 
 ## Player Points
 
-Next, we will implement the player scoring system.
+Next, we will implement the player scoring system, with the same mutator + behaviour pair.
 
-Create the state module `states/player_points.lua`:
+Create the mutator `mutators/points.lua`:
 
 ```lua
-local function add_points(state, points)
+local function add(state, points)
 	if not state.points then -- Safe state modification
 		return
 	end
@@ -152,44 +210,60 @@ local function add_points(state, points)
 end
 
 return {
-	add_points = add_points
+	add = add,
 }
 ```
 
-Now create the behaviour `behaviours/player_points.lua`:
+Register it in `mutators/init.lua`:
 
 ```lua
-local player_points = require("states.player_points")
+return {
+	forces = require("mutators.forces"),
+	health = require("mutators.health"),
+	points = require("mutators.points"),
+}
+```
 
+Now create the behaviour `behaviours/game_manager/player_points.lua`:
+
+```lua
+local mutators = require("mutators")
+
+---@type Behaviour
 return {
 	init = function(state)
 		state.points = 0 -- Initial score
 
+		-- "meteor_destroyed" will be emitted by the bullet, in the next section
 		sucata.events.on(state, "meteor_destroyed", function(_)
-			player_points.add_points(state, 5)
+			mutators.points.add(state, 5)
 		end)
 	end
 }
 ```
 
-Register the behaviour in `behaviours/init.lua`:
+Register the behaviour in `behaviours/game_manager/init.lua`:
 
 ```lua
 return {
-	...
-	PlayerPoints = require("behaviours.player_points")
+	meteor_spawner = require("behaviours.game_manager.meteor_spawner"),
+	player_health  = require("behaviours.game_manager.player_health"),
+	player_points  = require("behaviours.game_manager.player_points"),
 }
 ```
 
 Update the Game Manager in `entities/game_manager.lua`:
 
 ```lua
+local behaviours = require("behaviours")
+
+---@type Entity
 return {
 	state = {},
 	behaviours = {
-		Behaviours.PlayerHealth,
-		Behaviours.PlayerPoints,
-		Behaviours.MeteorSpawner
+		behaviours.game_manager.player_health,
+		behaviours.game_manager.player_points,
+		behaviours.game_manager.meteor_spawner,
 	}
 }
 ```
@@ -200,49 +274,59 @@ return {
 
 Finally, we will draw the player UI on the screen.
 
-Create the behaviour `behaviours/draw_player_ui.lua`:
+Create the behaviour `behaviours/game_manager/draw_ui.lua`:
 
 ```lua
+local screen = require("commons.screen")
+
+---@type Behaviour
 return {
 	draw = function(state)
 		sucata.graphic.draw_text({
 			text = "Health: " .. state.health,
-			x = 960 - 16,
+			x = screen.WIDTH - screen.MARGIN,
 			y = 10,
-			font_size = 16,
-			align = "right"
+			size = 16,
+			align = "right",
+			fixed = true, -- Ignore the camera: this is UI
 		})
 
 		sucata.graphic.draw_text({
 			text = "Points: " .. state.points,
-			x = 960 - 16,
+			x = screen.WIDTH - screen.MARGIN,
 			y = 40,
-			font_size = 16,
-			align = "right"
+			size = 16,
+			align = "right",
+			fixed = true,
 		})
 	end
 }
 ```
 
-Register the behaviour in `behaviours/init.lua`:
+Register the behaviour in `behaviours/game_manager/init.lua`:
 
 ```lua
 return {
-	...
-	DrawPlayerUi = require("behaviours.draw_player_ui")
+	draw_ui        = require("behaviours.game_manager.draw_ui"),
+	meteor_spawner = require("behaviours.game_manager.meteor_spawner"),
+	player_health  = require("behaviours.game_manager.player_health"),
+	player_points  = require("behaviours.game_manager.player_points"),
 }
 ```
 
 Add the UI behaviour to the Game Manager:
 
 ```lua
+local behaviours = require("behaviours")
+
+---@type Entity
 return {
 	state = {},
 	behaviours = {
-		Behaviours.PlayerHealth,
-		Behaviours.PlayerPoints,
-		Behaviours.MeteorSpawner,
-		Behaviours.DrawPlayerUi -- Rendering should happen last
+		behaviours.game_manager.player_health,
+		behaviours.game_manager.player_points,
+		behaviours.game_manager.meteor_spawner,
+		behaviours.game_manager.draw_ui, -- Rendering should happen last
 	}
 }
 ```

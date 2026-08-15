@@ -14,9 +14,14 @@ To survive, the player must **destroy the asteroids before they hit the ground**
 This project will introduce some basic concepts of the engine, such as:
 
 - Creating entities
-- Adding behaviors
-- Handling movement
+- Adding behaviours, and organizing them with aggregators
+- Handling movement with named forces
+- Sharing logic through mutators
 - Spawning objects
 - Detecting collisions
 - Creating UI
 - Handling button clicks
+
+The finished source of this tutorial lives in the
+[meteors-sucata](https://github.com/sucata-engine/meteors-sucata) repository — a useful reference
+whenever you want to see how the pieces fit together.
