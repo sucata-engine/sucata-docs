@@ -1510,7 +1510,8 @@ We will also add movement so the player can move around the screen.</p>
 <h2 id="creating-the-draw-behaviour">Creating the Draw Behaviour</h2>
 <p>First, we need a behaviour responsible for rendering a sprite.</p>
 <p>Create the file <code>behaviours/draw_sprite.lua</code>:</p>
-<pre><code class="language-lua">return {
+<pre><code class="language-lua">---@type Behaviour
+return {
     init = function(state) -- Called once when the entity enters the scene
         -- Try to get values from the state, fallback to defaults if missing
         state.x = state.x or 0
@@ -1527,33 +1528,48 @@ We will also add movement so the player can move around the screen.</p>
             y = state.y,
             width = state.width,
             height = state.height,
+            z_index = state.z_index or 0,
+            origin = 0.5, -- Center the sprite on x,y instead of the top-left corner
             texture = state.texture,
-            origin = 0.5,
             atlas_size = state.atlas_size,
-            atlas_x = state.atlas_x
+            atlas_x = state.atlas_x,
+            atlas_y = state.atlas_y,
+            opacity = state.opacity,
+            fixed = state.fixed,
         })
     end
 }
 </code></pre>
-<p>Now we need to register this behaviour.</p>
-<p>Create the file <code>behaviours/init.lua</code>:</p>
-<pre><code class="language-lua">return {
-    DrawSprite = require(&quot;behaviours.draw_sprite&quot;)
-}
-</code></pre>
-<p>Then expose the behaviours globally in <code>main.lua</code>:</p>
-<pre><code class="language-lua">Behaviours = require(&quot;behaviours&quot;)
-</code></pre>
 <blockquote>
 <p><strong>Tip</strong>
-It is recommended to create a <strong>single shared reference for behaviours</strong> instead of requiring them locally.
-Sucata reuses behaviours that share the same pointer, which improves performance.</p>
+The <code>---@type Behaviour</code> annotation lets the <a href="../../installation/">sucata Lua addon</a> type-check the
+table for you. Add it to every behaviour, and <code>---@type Entity</code> to every entity.</p>
+</blockquote>
+<p>Now we need to register this behaviour in the <strong>aggregator</strong>.</p>
+<p>Create the file <code>behaviours/init.lua</code>:</p>
+<pre><code class="language-lua">-- Aggregator: every behaviour, under a key equal to its file name.
+return {
+    draw_sprite = require(&quot;behaviours.draw_sprite&quot;),
+}
+</code></pre>
+<p>Every file that needs a behaviour requires the <strong>folder</strong>, never the file:</p>
+<pre><code class="language-lua">local behaviours = require(&quot;behaviours&quot;)
+</code></pre>
+<blockquote>
+<p><strong>Important</strong>
+Sucata reuses behaviours that share the same Lua table <em>pointer identity</em>.
+<code>require</code> caches by module name, so going through the aggregator means every entity in your game
+shares the exact same behaviour tables — that's what makes the reuse work.
+Never <code>require("behaviours.draw_sprite")</code> directly from an entity or another behaviour.</p>
 </blockquote>
 <hr />
 <h2 id="creating-the-player-entity">Creating the Player Entity</h2>
 <p>Now we will create the player entity.</p>
 <p>Create the file <code>entities/player.lua</code>:</p>
-<pre><code class="language-lua">local function player(x, y)
+<pre><code class="language-lua">local behaviours = require(&quot;behaviours&quot;)
+
+local function player(x, y)
+    ---@type Entity
     return {
         state = {
             x = x, -- Player position
@@ -1561,7 +1577,7 @@ Sucata reuses behaviours that share the same pointer, which improves performance
         },
 
         behaviours = {
-            Behaviours.DrawSprite -- Render the player
+            behaviours.draw_sprite -- Render the player
         }
     }
 end
@@ -1569,41 +1585,57 @@ end
 return player
 </code></pre>
 <p>Now spawn the player in <code>main.lua</code>:</p>
-<pre><code class="language-lua">local Player = require(&quot;entities.player&quot;)
+<pre><code class="language-lua">require(&quot;config&quot;)
 
-sucata.scene.spawn(Player(480, 500)) -- Spawn player near the center of the screen
+local screen = require(&quot;commons.screen&quot;)
+local player = require(&quot;entities.player&quot;)
+
+sucata.scene.spawn(player(screen.WIDTH / 2, screen.HEIGHT - 40))
 </code></pre>
 <p>The game should now look like this:</p>
 <p><img alt="White square in the center of the screen" src="../images/first-player-draw.png" /></p>
 <hr />
 <h2 id="creating-the-player-behaviour">Creating the Player Behaviour</h2>
 <p>Next, we will add player movement using the keyboard.</p>
-<p>Create the file <code>behaviours/player.lua</code>:</p>
-<pre><code class="language-lua">return {
+<p>Since this behaviour only makes sense for the player, it goes in a <strong>subfolder named after the
+entity</strong>: <code>behaviours/player/</code>.</p>
+<p>Create the file <code>behaviours/player/controller.lua</code>:</p>
+<pre><code class="language-lua">---@type Behaviour
+return {
     init = function(state)
         state.speed = state.speed or 200 -- Default movement speed
     end,
 
     tick = function(state)
-        local dt = sucata.time.get_delta() -- Time between frames
+        local delta = sucata.time.get_delta() -- Time between frames
 
         if sucata.input.is_held(&quot;left&quot;, &quot;a&quot;) then
-            state.x = state.x - state.speed * dt
+            state.x = state.x - state.speed * delta
         elseif sucata.input.is_held(&quot;right&quot;, &quot;d&quot;) then
-            state.x = state.x + state.speed * dt
+            state.x = state.x + state.speed * delta
         end
     end
 }
 </code></pre>
 <p>Player input is handled through the <code>sucata.input</code> module.</p>
-<p>Now register the behaviour in <code>behaviours/init.lua</code>:</p>
-<pre><code class="language-lua">return {
-    DrawSprite = require(&quot;behaviours.draw_sprite&quot;),
-    Player = require(&quot;behaviours.player&quot;)
+<p>Subfolders have their own aggregator. Create <code>behaviours/player/init.lua</code>:</p>
+<pre><code class="language-lua">-- Behaviours only the player uses.
+return {
+    controller = require(&quot;behaviours.player.controller&quot;),
 }
 </code></pre>
-<p>Then add the player behaviour to the entity in <code>entities/player.lua</code>:</p>
-<pre><code class="language-lua">local function player(x, y)
+<p>And expose the subfolder from the main aggregator, <code>behaviours/init.lua</code>:</p>
+<pre><code class="language-lua">return {
+    draw_sprite = require(&quot;behaviours.draw_sprite&quot;),
+
+    player = require(&quot;behaviours.player&quot;), -- Resolves to behaviours/player/init.lua
+}
+</code></pre>
+<p>Then add the behaviour to the entity in <code>entities/player.lua</code>:</p>
+<pre><code class="language-lua">local behaviours = require(&quot;behaviours&quot;)
+
+local function player(x, y)
+    ---@type Entity
     return {
         state = {
             x = x,
@@ -1611,8 +1643,8 @@ sucata.scene.spawn(Player(480, 500)) -- Spawn player near the center of the scre
         },
 
         behaviours = {
-            Behaviours.Player,     -- Handle player logic
-            Behaviours.DrawSprite  -- Render player
+            behaviours.player.controller, -- Handle player logic
+            behaviours.draw_sprite        -- Render player
         }
     }
 end
@@ -1628,25 +1660,32 @@ Behaviours are executed <strong>in order</strong>, so the player logic runs befo
 <hr />
 <h2 id="adding-screen-boundaries">Adding Screen Boundaries</h2>
 <p>To finish the initial player implementation, we will prevent the player from leaving the screen.</p>
-<p>Update <code>behaviours/player.lua</code>:</p>
-<pre><code class="language-lua">return {
+<p>Update <code>behaviours/player/controller.lua</code>:</p>
+<pre><code class="language-lua">local screen = require(&quot;commons.screen&quot;)
+
+local BOUND = 20 -- Distance kept from the screen edges
+
+---@type Behaviour
+return {
     init = function(state)
         state.speed = state.speed or 200
     end,
 
     tick = function(state)
-        local dt = sucata.time.get_delta()
+        local delta = sucata.time.get_delta()
 
         -- Add horizontal boundaries
-        if sucata.input.is_held(&quot;left&quot;, &quot;a&quot;) and state.x &gt; 20 then
-            state.x = state.x - state.speed * dt
-        elseif sucata.input.is_held(&quot;right&quot;, &quot;d&quot;) and state.x &lt; 492 then
-            state.x = state.x + state.speed * dt
+        if sucata.input.is_held(&quot;left&quot;, &quot;a&quot;) and state.x &gt; BOUND then
+            state.x = state.x - state.speed * delta
+        elseif sucata.input.is_held(&quot;right&quot;, &quot;d&quot;) and state.x &lt; screen.WIDTH - BOUND then
+            state.x = state.x + state.speed * delta
         end
     end
 }
 </code></pre>
 <p>Now we have the <strong>first working version of the player</strong>!</p>
+<p>In the next section we will make meteors fall, and while doing that we will replace this direct
+<code>state.x</code> manipulation with <strong>named forces</strong> — the way movement is normally handled in Sucata.</p>
 
 
 

@@ -541,6 +541,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#project-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#constants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constants
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1364,6 +1386,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#project-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#constants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Constants
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1470,14 +1514,60 @@ You can follow the installation guide on the <a href="../../installation/">insta
 <p>If the installation was successful, the engine version will be printed in the terminal.</p>
 <p>Next, create a new folder for your project. Inside this folder, create a file called <code>main.lua</code>.
 This file will be the <strong>main entry point of your game</strong>.</p>
+<p>To run the game at any point during this tutorial, use:</p>
+<pre><code class="language-bash">sucata run main.lua
+</code></pre>
+<h2 id="project-layout">Project layout</h2>
+<p>Sucata doesn't enforce a scaffold, but this tutorial follows the layout every Sucata project uses.
+We will create these folders as we need them:</p>
+<pre><code>meteors/
+├── main.lua               Entry point — the file you pass to `sucata run`
+├── config.lua             Window setup
+├── behaviours/            Reusable init/tick/draw/free tables
+│   ├── init.lua           Aggregator: exposes every behaviour in one table
+│   └── player/            Behaviours only one entity uses live in a subfolder named after it
+│       └── init.lua       Nested aggregator — reached as `behaviours.player.*`
+├── entities/              Factory functions: fn(...) -&gt; { state = {...}, behaviours = {...} }
+├── mutators/              Pure functions that read/mutate one slice of an entity's state
+│   └── init.lua           Aggregator — reached as `mutators.forces.*`, `mutators.health.*`
+├── commons/               Shared constants — data only, no logic, no state
+├── scenes/                Functions returning a list of entities
+├── sprites/               Texture assets
+└── sounds/                Audio assets
+</code></pre>
+<p>Two naming rules keep this predictable:</p>
+<ul>
+<li>Files are <code>snake_case.lua</code>, and the key a module is exposed under in <code>init.lua</code> is exactly its
+  file name (<code>draw_sprite.lua</code> → <code>draw_sprite</code>).</li>
+<li>A folder is always reached through its <code>init.lua</code>, never file by file: <code>require("behaviours")</code>
+  and <code>require("mutators")</code> are the only entry points into those trees.</li>
+</ul>
+<h2 id="constants">Constants</h2>
+<p>Start with the screen size, since a lot of the game logic depends on it.</p>
+<p>Create the file <code>commons/screen.lua</code>:</p>
+<pre><code class="language-lua">-- Data only: constants shared by behaviours, entities and mutators.
+return {
+    WIDTH = 960,
+    HEIGHT = 540,
+    MARGIN = 16,
+}
+</code></pre>
+<blockquote>
+<p><strong>Tip</strong>
+Keeping constants in <code>commons/</code> instead of repeating <code>960</code> across a dozen files means changing
+the window size later is a one-line change.</p>
+</blockquote>
 <h2 id="configuration">Configuration</h2>
 <p>To configure the game window, you can use functions from <code>sucata.window</code>.</p>
 <p>It is recommended to place these settings in a separate file called <code>config.lua</code>.</p>
-<pre><code class="language-lua">sucata.window.set_window_size(960, 540) -- Game window size in pixels
+<pre><code class="language-lua">local screen = require(&quot;commons.screen&quot;)
+
+sucata.window.set_window_size(screen.WIDTH, screen.HEIGHT) -- Game window size, in pixels
 sucata.window.set_keep_aspect(1) -- Maintain aspect ratio when resizing the window
 -- (0 = off, 1 = keep aspect with bars, 2 = keep aspect with crop)
 
 sucata.window.set_window_title(&quot;My First Game&quot;) -- Window title
+sucata.window.set_max_fps(0) -- Frame rate cap (0 = uncapped)
 sucata.window.set_vsync(1) -- Enable VSync (0 = off, 1 = on, higher values for specific intervals)
 
 sucata.window.show_debug_info(true) -- Display debug information such as FPS and engine stats

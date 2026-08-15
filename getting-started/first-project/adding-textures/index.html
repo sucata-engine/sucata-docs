@@ -1486,24 +1486,29 @@
 <p>In this section we will add <strong>textures</strong> to our game.<br />
 We will add textures for the <strong>player</strong>, <strong>meteors</strong>, and <strong>bullets</strong>.</p>
 <p>You can download the assets used in this tutorial from<br />
-<a href="https://github.com/sucata-engine/meteors-sucata/src/branch/main/sprites">here</a>.</p>
+<a href="https://github.com/sucata-engine/meteors-sucata/tree/main/sprites">here</a>.</p>
 <hr />
 <h2 id="bullet-texture">Bullet Texture</h2>
 <p>Let's start with the simplest texture: the <strong>bullet</strong>.</p>
 <p>Update the state in <code>entities/bullet.lua</code>:</p>
-<pre><code class="language-lua">local function bullet(x, y)
+<pre><code class="language-lua">local behaviours = require(&quot;behaviours&quot;)
+
+local function bullet(x, y)
+    ---@type Entity
     return {
         state = {
             x = x,
             y = y,
             texture = &quot;src://sprites/bullet.png&quot;, -- Texture path
-            width = 16, -- Bullet width
-            height = 16 -- Bullet height
+            width = 16,  -- Bullet width
+            height = 16  -- Bullet height
         },
+
         behaviours = {
-            Behaviours.Bullet,
-            Behaviours.ApplyForces,
-            Behaviours.DrawSprite,
+            behaviours.forces,
+            behaviours.bullet.shot,
+            behaviours.bullet.hit_meteor,
+            behaviours.draw_sprite,
         }
     }
 end
@@ -1515,49 +1520,46 @@ return bullet
 <code>src://</code> represents the <strong>root directory of the project</strong>.
 Use this prefix whenever referencing files inside the project.</p>
 </blockquote>
-<p>The <code>DrawSprite</code> behaviour automatically renders textures when the <code>texture</code>, <code>width</code>, and <code>height</code> fields are present in the entity state.</p>
+<p>The <code>draw_sprite</code> behaviour automatically renders textures when the <code>texture</code>, <code>width</code>, and <code>height</code> fields are present in the entity state.</p>
 <p>The result should look like this:</p>
 <p><img alt="" src="../images/bullet-texture.png" /></p>
 <hr />
 <h2 id="meteor-texture">Meteor Texture</h2>
 <p>The meteor texture uses a <strong>texture atlas</strong> so the meteor appearance changes based on its health.</p>
 <p>First, define the texture in the meteor entity (<code>entities/meteor.lua</code>):</p>
-<pre><code class="language-lua">local function meteor()
+<pre><code class="language-lua">local behaviours = require(&quot;behaviours&quot;)
+
+local function meteor()
+    ---@type Entity
     return {
         state = {
             y = -16,
             texture = &quot;src://sprites/meteor.png&quot;, -- Meteor texture
             atlas_size = 8 -- Split the texture into 8 horizontal frames
         },
+
         behaviours = {
-            Behaviours.RandomStartPosition,
-            Behaviours.Meteor,
-            Behaviours.ApplyForces,
-            Behaviours.DrawSprite,
+            behaviours.random_start_position,
+            behaviours.forces,
+            behaviours.meteor.fall,
+            behaviours.meteor.damage,
+            behaviours.draw_sprite,
         }
     }
 end
 
 return meteor
 </code></pre>
-<p>Now update the meteor behaviour in <code>behaviours/meteor.lua</code>:</p>
-<pre><code class="language-lua">return {
+<p>Now pick the frame from the remaining health. The health slice already has its own behaviour, so
+the atlas frame goes there — update <code>behaviours/meteor/damage.lua</code>:</p>
+<pre><code class="language-lua">---@type Behaviour
+return {
     init = function(state)
-        sucata.scene.add_tag(state, &quot;meteor&quot;)
-
-        state.speed = state.speed or math.random(100, 200)
-        state.health = state.health or math.random(1, 5)
-        state.force_y = state.speed
+        state.health = state.health or math.random(1, 5) -- Random meteor health
     end,
 
     tick = function(state)
-        if state.y &gt; 540 then
-            sucata.events.emit(&quot;meteor_reached&quot;, state)
-            sucata.scene.destroy(state)
-        end
-
-        -- Select the texture frame based on meteor health
-        state.atlas_x = state.health - 1
+        state.atlas_x = state.health - 1 -- Select the frame based on meteor health
     end
 }
 </code></pre>
@@ -1566,25 +1568,26 @@ return meteor
 <hr />
 <h2 id="player-texture">Player Texture</h2>
 <p>For the player we will add a <strong>texture atlas</strong> that represents the ship inclination.</p>
-<p>First create a new behaviour in <code>behaviours/inclination.lua</code>:</p>
-<pre><code class="language-lua">return {
+<p>This is player-specific, so create the behaviour in <code>behaviours/player/inclination.lua</code>:</p>
+<pre><code class="language-lua">---@type Behaviour
+return {
     init = function(state)
-        state.inclination = 2 -- Initial inclination frame
+        state.inclination = 2 -- Middle frame of the ship atlas
     end,
 
     tick = function(state)
-        local dt = sucata.time.get_delta()
+        local delta = sucata.time.get_delta()
 
         if sucata.input.is_held(&quot;left&quot;, &quot;a&quot;) then
             state.inclination = sucata.math.clamp(
-                state.inclination - (15 * dt),
+                state.inclination - (15 * delta),
                 0,
                 4
             )
 
         elseif sucata.input.is_held(&quot;right&quot;, &quot;d&quot;) then
             state.inclination = sucata.math.clamp(
-                state.inclination + (15 * dt),
+                state.inclination + (15 * delta),
                 0,
                 4
             )
@@ -1593,22 +1596,26 @@ return meteor
             state.inclination = sucata.math.lerp(
                 state.inclination,
                 2,
-                dt * 10
+                delta * 10
             )
         end
 
-        state.atlas_x = math.floor(state.inclination)
+        state.atlas_x = math.floor(state.inclination) -- Frame of the texture atlas
     end
 }
 </code></pre>
-<p>Register the behaviour in <code>behaviours/init.lua</code>:</p>
+<p>Register the behaviour in <code>behaviours/player/init.lua</code>:</p>
 <pre><code class="language-lua">return {
-    ...
-    Inclination = require(&quot;behaviours.inclination&quot;),
+    controller  = require(&quot;behaviours.player.controller&quot;),
+    inclination = require(&quot;behaviours.player.inclination&quot;),
+    shooter     = require(&quot;behaviours.player.shooter&quot;),
 }
 </code></pre>
 <p>Now update the player entity in <code>entities/player.lua</code>:</p>
-<pre><code class="language-lua">local function player(x, y)
+<pre><code class="language-lua">local behaviours = require(&quot;behaviours&quot;)
+
+local function player(x, y)
+    ---@type Entity
     return {
         state = {
             x = x,
@@ -1616,11 +1623,13 @@ return meteor
             texture = &quot;src://sprites/ship.png&quot;, -- Player texture
             atlas_size = 8 -- Split texture into 8 frames
         },
+
         behaviours = {
-            Behaviours.Player,
-            Behaviours.Inclination,
-            Behaviours.Shooter,
-            Behaviours.DrawSprite,
+            behaviours.forces,
+            behaviours.player.controller,
+            behaviours.player.inclination,
+            behaviours.player.shooter,
+            behaviours.draw_sprite,
         }
     }
 end

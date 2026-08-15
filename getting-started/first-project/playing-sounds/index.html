@@ -1511,18 +1511,21 @@
 <hr />
 <h2 id="health-loss-sound">Health Loss Sound</h2>
 <p>This sound will play when a meteor reaches the end of the screen.</p>
-<p>Update the behaviour <code>behaviours/meteor.lua</code>:</p>
-<pre><code class="language-lua">return {
+<p>Update the behaviour <code>behaviours/meteor/fall.lua</code>:</p>
+<pre><code class="language-lua">local mutators = require(&quot;mutators&quot;)
+local screen = require(&quot;commons.screen&quot;)
+
+---@type Behaviour
+return {
     init = function(state)
         sucata.scene.add_tag(state, &quot;meteor&quot;)
-
         state.speed = state.speed or math.random(100, 200)
-        state.health = state.health or math.random(1, 5)
-        state.force_y = state.speed
+
+        mutators.forces.set_force(state, &quot;gravity&quot;, { x = 0, y = state.speed })
     end,
 
     tick = function(state)
-        if state.y &gt; 540 then
+        if state.y &gt; screen.HEIGHT then
             sucata.events.emit(&quot;meteor_reached&quot;, state)
 
             sucata.audio.play({
@@ -1531,8 +1534,6 @@
 
             sucata.scene.destroy(state)
         end
-
-        state.atlas_x = state.health - 1
     end
 }
 </code></pre>
@@ -1544,25 +1545,37 @@ Use this prefix whenever referencing files inside the project.</p>
 <hr />
 <h2 id="shooting-sound">Shooting Sound</h2>
 <p>This sound will play when the player fires a bullet.</p>
-<p>Update <code>behaviours/bullet.lua</code>:</p>
-<pre><code class="language-lua">return {
+<p>Update <code>behaviours/bullet/shot.lua</code>:</p>
+<pre><code class="language-lua">local mutators = require(&quot;mutators&quot;)
+
+---@type Behaviour
+return {
     init = function(state)
         state.speed = state.speed or 400
-        state.force_y = -state.speed
 
-        -- Play shooting sound when the bullet is spawned
+        mutators.forces.set_force(state, &quot;shot&quot;, { x = 0, y = -state.speed })
+
+        -- Play the shooting sound when the bullet is spawned
         sucata.audio.play({
             sound = &quot;src://sounds/shoot.ogg&quot;
         })
     end,
-    ...
+
+    tick = function(state)
+        if state.y &lt; -16 then
+            sucata.scene.destroy(state)
+        end
+    end
 }
 </code></pre>
 <hr />
 <h2 id="meteor-hit-sound">Meteor Hit Sound</h2>
 <p>Now we will add a sound effect when a meteor is hit by a bullet.</p>
-<p>Update <code>behaviours/bullet.lua</code>:</p>
-<pre><code class="language-lua">return {
+<p>Update <code>behaviours/bullet/hit_meteor.lua</code>:</p>
+<pre><code class="language-lua">local mutators = require(&quot;mutators&quot;)
+
+---@type Behaviour
+return {
     tick = function(state)
         local meteors = sucata.scene.get_entities_by_tag(&quot;meteor&quot;)
 
@@ -1580,14 +1593,14 @@ Use this prefix whenever referencing files inside the project.</p>
                 width = 32,
                 height = 32
             }) then
-                health.remove(meteor)
+                mutators.health.remove(meteor)
 
-                if meteor.health &lt;= 0 then
+                if mutators.health.is_dead(meteor) then
                     sucata.events.emit(&quot;meteor_destroyed&quot;, meteor)
                     sucata.scene.destroy(meteor)
                 end
 
-                -- Play shooting sound when the meteor is hitted
+                -- Play the explosion sound when the meteor is hit
                 sucata.audio.play({
                     sound = &quot;src://sounds/explosion.ogg&quot;
                 })
@@ -1601,9 +1614,11 @@ Use this prefix whenever referencing files inside the project.</p>
 </code></pre>
 <hr />
 <h2 id="playing-music">Playing Music</h2>
-<p>Now we will add <strong>background music</strong> to the game.</p>
+<p>Now we will add <strong>background music</strong> to the game. Any entity could reuse this behaviour, so it
+stays at the top level of <code>behaviours/</code>.</p>
 <p>Create a new behaviour <code>behaviours/music.lua</code>:</p>
-<pre><code class="language-lua">return {
+<pre><code class="language-lua">---@type Behaviour
+return {
     init = function(state)
         if state.music then
             state.music_id = sucata.audio.play({
@@ -1612,40 +1627,57 @@ Use this prefix whenever referencing files inside the project.</p>
                 volume = 0.5
             })
         end
+    end,
+
+    free = function(state)
+        if state.music_id then
+            sucata.audio.stop(state.music_id) -- Stop the music when the entity is removed
+        end
     end
 }
 </code></pre>
 <p>Register the behaviour in <code>behaviours/init.lua</code>:</p>
-<p>```lua id="e5vwy2"
-return {
-    ...
-    Music = require("behaviours.music"),
-}</p>
-<pre><code>
-Now create an entity responsible for playing the background music.
+<pre><code class="language-lua">return {
+    draw_sprite           = require(&quot;behaviours.draw_sprite&quot;),
+    forces                = require(&quot;behaviours.forces&quot;),
+    music                 = require(&quot;behaviours.music&quot;),
+    random_start_position = require(&quot;behaviours.random_start_position&quot;),
 
-Create `entities/music.lua`:
+    bullet       = require(&quot;behaviours.bullet&quot;),
+    game_manager = require(&quot;behaviours.game_manager&quot;),
+    meteor       = require(&quot;behaviours.meteor&quot;),
+    player       = require(&quot;behaviours.player&quot;),
+}
+</code></pre>
+<p>Now create an entity responsible for playing the background music.</p>
+<p>Create <code>entities/music.lua</code>:</p>
+<pre><code class="language-lua">local behaviours = require(&quot;behaviours&quot;)
 
-```lua id=&quot;h53grq&quot;
 local function music()
+    ---@type Entity
     return {
         state = {
             music = &quot;src://sounds/music.ogg&quot;
         },
 
         behaviours = {
-            Behaviours.Music
+            behaviours.music,
         }
     }
 end
 
 return music
 </code></pre>
-<p>Finally, spawn the music entity in <code>main.lua</code>:</p>
+<p>Finally, load the music entity in <code>main.lua</code>:</p>
 <pre><code class="language-lua">local music = require(&quot;entities.music&quot;)
 
-sucata.scene.spawn(music())
+sucata.scene.load_global(&quot;music&quot;, music())
 </code></pre>
+<blockquote>
+<p><strong>Tip</strong>
+<code>sucata.scene.load_global</code> keeps the entity alive across scene reloads, so the music doesn't
+restart every time you load a new scene.</p>
+</blockquote>
 <p>The background music will now <strong>play in a loop</strong> while the game is running.</p>
 
 

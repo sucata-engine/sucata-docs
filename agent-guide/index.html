@@ -939,10 +939,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#states-pattern-optional-but-recommended" class="md-nav__link">
+  <a href="#mutators-shared-logic-over-a-slice-of-state" class="md-nav__link">
     <span class="md-ellipsis">
       
-        "States" pattern (optional but recommended)
+        Mutators — shared logic over a slice of state
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commons-shared-constants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commons — shared constants
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#status-animation-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status + animation convention
       
     </span>
   </a>
@@ -1723,10 +1745,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#states-pattern-optional-but-recommended" class="md-nav__link">
+  <a href="#mutators-shared-logic-over-a-slice-of-state" class="md-nav__link">
     <span class="md-ellipsis">
       
-        "States" pattern (optional but recommended)
+        Mutators — shared logic over a slice of state
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commons-shared-constants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commons — shared constants
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#status-animation-convention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Status + animation convention
       
     </span>
   </a>
@@ -1855,7 +1899,8 @@
 
 
 <h1 id="building-a-game-with-sucata-agent-guide">Building a game with Sucata (Agent Guide)</h1>
-<p>This page is a practical, self-contained guide for creating a game with <strong>Sucata</strong>, in the spirit of Love2D/Godot. It's aimed at whoever — human or AI coding agent — is writing a <em>game</em> on top of Sucata, condensing everything needed to be productive on one page, with links to the full reference for exhaustive per-function detail. It's the same guide shipped as <code>AGENT.md</code> in the <a href="https://github.com/sucata-engine/sucata">sucata</a> repository, for use by coding agents working directly in a project's source tree.</p>
+<p>This page is a practical, self-contained guide for creating a game with <strong>Sucata</strong>, a 2D game engine built with Odin (core) and scripted with <strong>Lua</strong> (game logic), in the spirit of Love2D/Godot. It's aimed at whoever — human or AI coding agent — is writing a <em>game</em> on top of Sucata, not at contributors to the engine's own source. For that, see <a href="https://github.com/sucata-engine/sucata-cli/blob/main/AGENT.md">sucata-cli/AGENT.md</a> and <a href="https://github.com/sucata-engine/sucata-player/blob/main/AGENT.md">sucata-player/AGENT.md</a>.</p>
+<p>It's the same guide shipped as <a href="https://github.com/sucata-engine/sucata-engine/blob/main/AGENT.md"><code>AGENT.md</code></a> in the <a href="https://github.com/sucata-engine/sucata-engine">sucata-engine</a> repository, for use by coding agents working directly in a project's source tree. It condenses everything needed to be productive on one page, and links out to the <a href="../references/sucata.audio/">References</a> for exhaustive per-function detail.</p>
 <h2 id="what-sucata-is">What Sucata is</h2>
 <ul>
 <li><strong>Engine core</strong>: Odin, using <a href="https://github.com/floooh/sokol">sokol</a> for graphics/audio-input plumbing, SDL3 for gamepad, miniaudio for audio.</li>
@@ -1878,11 +1923,11 @@ sucata version   # verify install
 <tbody>
 <tr>
 <td><code>sucata run &lt;main.lua&gt; [--entity &lt;file&gt;]</code></td>
-<td>Run a game (or a single entity file, for isolated testing) through the engine in dev mode.</td>
+<td>Run a game (or a single entity file, for isolated testing) through the engine (<code>sucata-player</code>) in dev mode.</td>
 </tr>
 <tr>
-<td><code>sucata build &lt;main.lua&gt; [--icon &lt;path&gt;]</code></td>
-<td>Package the game into a native, OS-specific distributable (see "Building" below). Current OS only, no cross-build yet.</td>
+<td><code>sucata build &lt;main.lua&gt; [--icon &lt;path&gt;] [--optimize]</code></td>
+<td>Package the game into a native, OS-specific distributable (see "Building" below). <code>--optimize</code> recompresses opaque images as JPEG to shrink the bundle. Current OS only, no cross-build yet.</td>
 </tr>
 <tr>
 <td><code>sucata shader build &lt;file.glsl&gt;</code></td>
@@ -1902,38 +1947,49 @@ sucata version   # verify install
 <h2 id="project-layout-convention">Project layout convention</h2>
 <p>There's no enforced scaffold, but every existing Sucata game (including the official <a href="https://github.com/sucata-engine/meteors-sucata">meteors-sucata</a> example, and the <a href="../getting-started/first-project/overview/">First Project</a> tutorial) follows this shape:</p>
 <pre><code>my-game/
-├── main.lua              Entry point — required first by `sucata run`/`sucata build`
+├── main.lua               Entry point — required first by `sucata run`/`sucata build`
 ├── config.lua             Window setup (see below) — required from main.lua
-├── behaviours/
-│   ├── init.lua           Aggregates ALL behaviours into one shared table (see &quot;Behaviours&quot; below — important!)
-│   ├── player.lua
-│   ├── meteor.lua
-│   └── ...
+├── behaviours/            Reusable init/tick/draw/free tables
+│   ├── init.lua           Aggregator: exposes every behaviour in one table (see &quot;Behaviours&quot; — important!)
+│   ├── animator.lua
+│   ├── draw_sprite.lua
+│   ├── forces.lua
+│   └── player/            Entity-specific behaviours live in a subfolder named after the entity
+│       ├── init.lua       Nested aggregator — reached as `behaviours.player.*`
+│       ├── controller.lua
+│       ├── movement.lua
+│       └── punch.lua
 ├── entities/              Factory functions: fn(...) -&gt; { state = {...}, behaviours = {...} }
-│   ├── player.lua
-│   ├── meteor.lua
-│   └── ...
-├── states/                Optional: plain modules of pure functions that mutate a state field
-│   └── health.lua         (shared logic callable from multiple behaviours, e.g. health.remove(state))
-├── sprites/                Texture assets (.png)
-├── sounds/                 Audio assets (.ogg, etc)
-└── fonts/                  Font assets
+│   └── player.lua
+├── mutators/              Pure functions that read/mutate one slice of an entity's state
+│   ├── init.lua           Aggregator — reached as `mutators.forces.*`, `mutators.status.*`
+│   ├── forces.lua
+│   └── status.lua
+├── commons/               Shared constants/enums — data only, no logic, no state
+│   └── status.lua
+├── sprites/               Texture assets (.png, plus .ase sources), one subfolder per entity
+│   └── player/
+├── sounds/                Audio assets (.ogg, etc)
+└── fonts/                 Font assets
 </code></pre>
+<p>Naming rules that keep the aggregators predictable:</p>
+<ul>
+<li>Files are <code>snake_case.lua</code>, and the key a module is exposed under in <code>init.lua</code> is exactly its file name (<code>draw_sprite.lua</code> → <code>draw_sprite</code>).</li>
+<li>A folder is always reached through its <code>init.lua</code>, never file by file: <code>require("behaviours")</code> and <code>require("mutators")</code> are the only entry points into those trees.</li>
+<li>A behaviour only one entity will ever use goes in <code>behaviours/&lt;entity&gt;/</code>; one any entity could reuse stays at the top level of <code>behaviours/</code>.</li>
+</ul>
 <p><code>main.lua</code> example:</p>
 <pre><code class="language-lua">require(&quot;config&quot;)
 
-Behaviours = require(&quot;behaviours&quot;)  -- single shared reference, see below
+local player = require(&quot;entities.player&quot;)
 
-local Player = require(&quot;entities.player&quot;)
-local game_manager = require(&quot;entities.game_manager&quot;)
-
-sucata.scene.spawn(Player(480, 500))
-sucata.scene.spawn(game_manager)
+sucata.scene.spawn(player(300, 500))
 </code></pre>
 <p><code>config.lua</code> example — window setup, conventionally isolated in its own file:</p>
-<pre><code class="language-lua">sucata.window.set_window_size(960, 540)
+<pre><code class="language-lua">sucata.window.set_window_size(1280, 720)
 sucata.window.set_keep_aspect(1) -- 0 = off, 1 = keep aspect with bars, 2 = keep aspect with crop
 sucata.window.set_window_title(&quot;My Game&quot;)
+sucata.window.set_max_fps(0) -- 0 = uncapped
 sucata.window.set_vsync(1)
 sucata.window.show_debug_info(true) -- disable before shipping
 sucata.window.set_window_icon(&quot;src://icon.png&quot;)
@@ -1947,87 +2003,115 @@ sucata.window.set_fullscreen(false)
 <p>An entity is a plain table with two fields:</p>
 <pre><code class="language-lua">{
   state = { x = 0, y = 0 },      -- unique data for this entity (id is injected by the engine on spawn)
-  behaviours = { Behaviours.Foo, Behaviours.Bar }, -- ordered list of behaviours applied to it
+  behaviours = { behaviours.foo, behaviours.bar }, -- ordered list of behaviours applied to it
 }
 </code></pre>
-<p>Entities are usually built via a factory function in <code>entities/&lt;name&gt;.lua</code>:</p>
+<p>Entities are built via a factory function in <code>entities/&lt;name&gt;.lua</code>, which pulls everything it needs from the aggregators:</p>
 <pre><code class="language-lua">-- entities/player.lua
+local behaviours = require(&quot;behaviours&quot;)
+
 local function player(x, y)
+  ---@type Entity
   return {
-    state = { x = x, y = y },
-    behaviours = { Behaviours.Player, Behaviours.Shooter, Behaviours.DrawSprite },
+    state = { x = x, y = y, texture = &quot;src://sprites/player/player.png&quot; },
+    behaviours = {
+      behaviours.time,
+      behaviours.player.controller, -- entity-specific, from behaviours/player/
+      behaviours.status,
+      behaviours.animator,
+      behaviours.forces,
+      behaviours.player.movement,
+      behaviours.draw_sprite,       -- rendering last
+    },
   }
 end
 
 return player
 </code></pre>
-<pre><code class="language-lua">sucata.scene.spawn(Player(480, 500))
+<pre><code class="language-lua">sucata.scene.spawn(player(300, 500))
 </code></pre>
 <h3 id="behaviour-the-core-building-block">Behaviour — the core building block</h3>
 <p>A behaviour is a <strong>stateless, reusable</strong> table of up to four optional functions, all receiving the entity's <code>state</code> table:</p>
-<pre><code class="language-lua">return {
+<pre><code class="language-lua">---@type Behaviour
+return {
   init = function(state) end,  -- once, when the entity is spawned/scene loads
   tick = function(state) end,  -- every frame, before drawing — game logic, input, physics
   draw = function(state) end,  -- every frame — call sucata.graphic.* here ONLY (see Rendering)
   free = function(state) end,  -- once, right before the entity is removed from the scene
 }
 </code></pre>
-<p><strong>Behaviours on an entity run in the order listed.</strong> Put logic before rendering (e.g. <code>Player</code> movement before <code>DrawSprite</code>).</p>
+<p>Annotate every behaviour module with <code>---@type Behaviour</code> (and every entity factory's return with <code>---@type Entity</code>) so the sumneko addon type-checks the table.</p>
+<p><strong>Behaviours on an entity run in the order listed.</strong> Put logic before rendering (e.g. <code>movement</code> before <code>draw_sprite</code>).</p>
 <blockquote>
-<p><strong>How behaviour reuse works</strong>: Sucata registers a behaviour once per Lua table <em>pointer identity</em> and shares that registration across every entity referencing it. Since <code>require()</code> already caches modules (<code>package.loaded</code>), calling <code>require("behaviours.player")</code> from any file returns the same shared table every time — reuse works automatically, no special wiring needed.</p>
-<p>Most Sucata projects still aggregate behaviours into a single <code>behaviours/init.lua</code> table as an organizational convention (one place to see every behaviour, shorter references elsewhere):</p>
+<p><strong>Critical performance/correctness rule</strong>: Sucata reuses behaviours that share the same Lua table <em>pointer identity</em>. Define each behaviour once, in its own file, and reach it only through an aggregator <code>init.lua</code>:</p>
 <p><code>lua
--- behaviours/init.lua
+-- behaviours/init.lua — generic behaviours + one key per entity subfolder
 return {
-  DrawSprite = require("behaviours.draw_sprite"),
-  Player     = require("behaviours.player"),
-  Shooter    = require("behaviours.shooter"),
+  animator     = require("behaviours.animator"),
+  draw_sprite  = require("behaviours.draw_sprite"),
+  forces       = require("behaviours.forces"),
+  player       = require("behaviours.player"), -- resolves to behaviours/player/init.lua
 }</code>
 <code>lua
--- main.lua
-Behaviours = require("behaviours")</code>
-Then reference <code>Behaviours.Player</code> etc. — or <code>require("behaviours.player")</code> directly, both resolve to the same table either way.</p>
+-- behaviours/player/init.lua
+return {
+  controller = require("behaviours.player.controller"),
+  movement   = require("behaviours.player.movement"),
+  punch      = require("behaviours.player.punch"),
+}</code>
+Consumers then do <code>local behaviours = require("behaviours")</code> at the top of the file and reference <code>behaviours.animator</code> / <code>behaviours.player.movement</code>. <code>require</code> caches by module name, so every file gets the same tables and reuse holds — but only if nothing bypasses the aggregator with a direct <code>require("behaviours.player.movement")</code>.</p>
 </blockquote>
-<p>A common building-block behaviour worth copying into most projects, <code>DrawSprite</code> (renders <code>state.texture</code>/<code>width</code>/<code>height</code> if present):</p>
-<pre><code class="language-lua">return {
-  init = function(state)
-    state.x = state.x or 0
-    state.y = state.y or 0
-    state.width = state.width or 32
-    state.height = state.height or 32
-    state.texture = state.texture or &quot;&quot;
-    state.atlas_x = state.atlas_x or 0
-  end,
+<p>Two building-block behaviours worth copying into most projects — copy the shape when adding new ones. <code>draw_sprite</code> (renders the entity's sprite; note that it forwards optional fields as-is so <code>nil</code> falls back to engine defaults):</p>
+<pre><code class="language-lua">local DEFAULT_WIDTH, DEFAULT_HEIGHT = 128, 128
+
+---@type Behaviour
+return {
   draw = function(state)
     sucata.graphic.draw_rect({
-      x = state.x, y = state.y,
-      width = state.width, height = state.height,
+      x = state.x or 0,
+      y = state.y or 0,
+      width = state.width or DEFAULT_WIDTH,
+      height = state.height or DEFAULT_HEIGHT,
+      z_index = state.z_index or 0,
+      origin_x = state.origin_x or 0.5, -- feet-anchored: centered horizontally
+      origin_y = state.origin_y or 1,   -- with the bottom edge on state.y
       texture = state.texture,
-      origin = 0.5, -- center the sprite on x,y instead of top-left
       atlas_size = state.atlas_size,
       atlas_x = state.atlas_x,
+      atlas_y = state.atlas_y,
+      scale_x = state.scale_x,
+      scale_y = state.scale_y,
+      opacity = state.opacity,
+      fixed = state.fixed,
     })
   end
 }
 </code></pre>
-<p>Another common one, <code>ApplyForces</code> (simple velocity integration):</p>
-<pre><code class="language-lua">return {
+<p><code>forces</code> — named-force accumulator, integrated once per frame. Behaviours never write <code>state.x</code> directly; they add/clear a <em>named</em> force through <code>mutators.forces</code> (see "Mutators" below) so gravity, jump and movement can coexist without overwriting each other:</p>
+<pre><code class="language-lua">---@type Behaviour
+return {
   init = function(state)
-    state.x = state.x or 0
-    state.y = state.y or 0
-    state.force_x = state.force_x or 0
-    state.force_y = state.force_y or 0
+    state.forces = {}
+    state.velocity_x = 0
+    state.velocity_y = 0
   end,
   tick = function(state)
-    local dt = sucata.time.get_delta()
-    state.x = state.x + state.force_x * dt
-    state.y = state.y + state.force_y * dt
+    local delta = sucata.time.get_delta()
+    local velocity_x, velocity_y = 0, 0
+    for _, force in pairs(state.forces) do
+      velocity_x = velocity_x + force.x
+      velocity_y = velocity_y + force.y
+    end
+    state.velocity_x = velocity_x
+    state.velocity_y = velocity_y
+    state.x = state.x + (velocity_x * delta)
+    state.y = state.y + (velocity_y * delta)
   end
 }
 </code></pre>
 <h3 id="no-hierarchy-relationships-via-ids">No hierarchy — relationships via ids</h3>
 <p>Entities are flat; there's no parent/child tree. To relate entities, store one's id in another's state and resolve it later:</p>
-<pre><code class="language-lua">local bullet_id = sucata.scene.spawn(Bullet())
+<pre><code class="language-lua">local bullet_id = sucata.scene.spawn(bullet())
 self.child_id = bullet_id
 ...
 local bullet = sucata.scene.find_by_id(self.child_id)
@@ -2055,22 +2139,63 @@ sucata.events.on(state, &quot;meteor_reached&quot;, function(meteor_state)
   -- react
 end)
 </code></pre>
+<p>Events are global, so the convention for entity-scoped events (input intents, status changes) is to send <code>{ id = state.id, ... }</code> and have each listener filter on it — that's what lets <code>controller</code> stay a dumb input reader while <code>jump</code>/<code>punch</code> decide what to do:</p>
+<pre><code class="language-lua">-- behaviours/player/controller.lua
+if sucata.input.is_pressed(&quot;space&quot;) then
+  sucata.events.emit(&quot;jump&quot;, { id = state.id })
+end
+
+-- behaviours/jump.lua
+sucata.events.on(state, &quot;jump&quot;, function(data)
+  if data.id == state.id and state.is_on_floor then
+    mutators.forces.set_force(state, &quot;jump&quot;, { x = 0, y = state.jump_force })
+  end
+end)
+</code></pre>
 <h3 id="timers">Timers</h3>
 <pre><code class="language-lua">sucata.time.create_timer(function()
   sucata.scene.spawn(meteor())
 end, { time = 5, loop = true, auto_start = true })
 </code></pre>
 <p>Or the shorthand <code>sucata.time.create_timer(callback, seconds)</code> for a one-shot. Also: <code>sucata.time.pause_timer(id)</code>, <code>sucata.time.stop_timer(id)</code>, <code>sucata.time.get_delta()</code>, <code>sucata.time.get_fps()</code>, <code>sucata.time.get_time_scale()</code>/<code>set_time_scale()</code> (slow-mo / pause effects).</p>
-<h3 id="states-pattern-optional-but-recommended">"States" pattern (optional but recommended)</h3>
-<p>Plain modules of pure functions that mutate a piece of state, shareable across multiple behaviours instead of duplicating logic:</p>
-<pre><code class="language-lua">-- states/health.lua
-local function remove(state)
-  if not state.health then return end
-  state.health = state.health - 1
+<h3 id="mutators-shared-logic-over-a-slice-of-state">Mutators — shared logic over a slice of state</h3>
+<p><code>mutators/</code> holds plain modules of stateless functions that read and mutate one named slice of an entity's <code>state</code>, so multiple behaviours share the logic instead of duplicating it. They are the <em>only</em> thing that should touch that slice.</p>
+<pre><code class="language-lua">-- mutators/forces.lua (excerpt)
+local function set_force(state, force_type, value)
+  if not state.forces then return end
+  state.forces[force_type] = value
 end
-return { remove = remove }
+
+local function clear_force(state, force_type)
+  if not state.forces then return end
+  set_force(state, force_type, { x = 0, y = 0 })
+end
+
+return { set_force = set_force, clear_force = clear_force, --[[ add_force, get_force, move_force_towards_zero ]] }
 </code></pre>
-<p>Used from any behaviour: <code>local health = require("states.health"); health.remove(meteor)</code>.</p>
+<p>Every mutator module is re-exported from <code>mutators/init.lua</code>, and consumers require the folder, never the file:</p>
+<pre><code class="language-lua">local mutators = require(&quot;mutators&quot;)
+
+mutators.forces.set_force(state, &quot;jump&quot;, { x = 0, y = state.jump_force })
+mutators.status.frooze_status(state, status.PUNCHING, 7 * 0.15)
+</code></pre>
+<p>Guard defensively (<code>if not state.forces then return end</code>) — a mutator may run against an entity whose behaviour list never initialised that slice.</p>
+<p>Typical mutators:</p>
+<ul>
+<li><strong><code>mutators.forces</code></strong> — <code>get_force</code>, <code>set_force</code>, <code>add_force</code>, <code>clear_force</code>, <code>move_force_towards_zero</code>, all keyed by a force name (<code>"gravity"</code>, <code>"jump"</code>, <code>"movement"</code>).</li>
+<li><strong><code>mutators.status</code></strong> — <code>set_status</code>, <code>frooze_status(state, status, time)</code> (locks the status for N seconds via a timer), <code>is_status(state, {..})</code>.</li>
+</ul>
+<h3 id="commons-shared-constants">Commons — shared constants</h3>
+<p><code>commons/</code> holds data-only modules: enums and constants shared across behaviours, entities and mutators. No functions, no state.</p>
+<pre><code class="language-lua">-- commons/status.lua
+return {
+  IDLE = 0, WALKING = 1, JUMPING = 2,
+  LANDING = 3, PUNCHING = 4, DEFENSING = 5,
+}
+</code></pre>
+<p>Required directly by file (there's no aggregator here, since each constant set is independent): <code>local status = require("commons.status")</code>.</p>
+<h3 id="status-animation-convention">Status + animation convention</h3>
+<p>The <code>status</code>/<code>animator</code> pair is how entities drive their sprite. An entity exposes <code>state.get_status(state)</code>, the <code>status</code> behaviour calls it each tick and emits <code>"status_changed"</code> when the value flips, and <code>animator</code> maps the current status to a row of the texture atlas via <code>state.animations[status] = { atlas_y, time, frames, one_shot? }</code>. Order matters: <code>status</code> must run before <code>animator</code>, and both before <code>draw_sprite</code>.</p>
 <h2 id="rendering">Rendering</h2>
 <ul>
 <li><code>sucata.graphic.draw_rect(props)</code> and <code>sucata.graphic.draw_text(props)</code> are the <strong>only</strong> two draw primitives, and they may <strong>only be called inside a behaviour's <code>draw(state)</code> function</strong> — calling them elsewhere (init/tick) has no effect since drawing happens in a dedicated render pass.</li>
@@ -2078,7 +2203,7 @@ return { remove = remove }
 <li>Textures not drawn in a given frame are unloaded from GPU memory automatically. A texture drawn <code>sucata.graphic.get_hot_texture_threshold()</code> times in a row (default 300) is promoted to "hot" and stays resident for the rest of the run. Call <code>sucata.graphic.preload_texture(path)</code> to force that promotion immediately (e.g. for UI/atlas textures you know will be reused constantly), or <code>sucata.graphic.set_hot_texture_threshold(n)</code> to tune the promotion threshold — pass <code>0</code> to disable automatic promotion entirely, so textures only go hot via an explicit <code>preload_texture</code> call.</li>
 <li><code>origin = 0.5</code> centers the sprite on <code>x,y</code> (default origin is <code>0,0</code> = top-left corner).</li>
 <li><code>fixed = true</code> on <code>RectProps</code>/<code>TextProps</code> renders relative to the screen, ignoring the camera (for UI/HUD).</li>
-<li>Texture atlas animation pattern (change frame based on state): set <code>atlas_x</code>/<code>atlas_y</code> in <code>tick</code>, e.g. <code>state.atlas_x = state.health - 1</code>.</li>
+<li>Texture atlas animation pattern (change frame based on state): set <code>atlas_x</code>/<code>atlas_y</code> in <code>tick</code> — conventionally that's the <code>animator</code> behaviour's job (<code>atlas_y</code> = row per status, <code>atlas_x</code> = frame, via <code>sucata.math.smooth_index</code> for loops or a clamped counter for <code>one_shot</code>), so add animations to <code>state.animations</code> rather than writing <code>atlas_*</code> from your own behaviour.</li>
 <li>Camera: <code>sucata.camera.get_camera_position/set_camera_position</code>, <code>get_camera_rotation/set_camera_rotation</code>, <code>get_camera_zoom/set_camera_zoom</code> — moves/rotates/zooms the (non-fixed) world view.</li>
 <li>Custom shaders: <code>sucata.graphic.load_shader(path)</code> (loads a compiled <code>.schd</code>) → pass the returned id as <code>shader</code> in <code>draw_rect</code>/<code>draw_text</code> props, or <code>sucata.graphic.add_post_processing(shader_id)</code> for full-screen post-fx, tunable at runtime with <code>sucata.graphic.set_post_processing_args(shader_id, field, value)</code>.</li>
 </ul>
@@ -2109,15 +2234,18 @@ local music_id = sucata.audio.play({ sound = &quot;src://sounds/music.ogg&quot;,
 <p><strong><code>sucata.time</code></strong> — <code>get_delta() -&gt; seconds</code>, <code>get_fps() -&gt; n</code>, <code>create_timer(callback, seconds|Timer) -&gt; id</code>, <code>pause_timer(id)</code>, <code>stop_timer(id)</code>, <code>get_time_scale()/set_time_scale(scale)</code>. <code>Timer</code>: <code>{time, auto_start=true, one_shot=true, loop=false}</code>. <a href="../references/sucata.time/">Full reference</a></p>
 <p><strong><code>sucata.events</code></strong> — <code>emit(name, data)</code>, <code>on(owner, name, callback)</code>. <a href="../references/sucata.events/">Full reference</a></p>
 <p><strong><code>sucata.camera</code></strong> — <code>get/set_camera_position(x,y)</code>, <code>get/set_camera_rotation(radians)</code>, <code>get/set_camera_zoom(zoom)</code>. <a href="../references/sucata.camera/">Full reference</a></p>
-<p><strong><code>sucata.window</code></strong> — <code>get/set_mouse_lock(bool)</code>, <code>get/set_mouse_visible(bool)</code>, <code>get/set_window_title(str)</code>, <code>get/set_window_size(w,h)</code>, <code>get/set_fullscreen(bool)</code>, <code>get/set_vsync(n)</code>, <code>quit()</code>, <code>show_debug_info(bool)</code>, <code>get/set_keep_aspect(0|1|2)</code>, <code>get/set_window_icon(path)</code>, <code>get/set_cursor(name)</code>, <code>on_init(callback)</code>, <code>on_exit(callback)</code>. <a href="../references/sucata.window/">Full reference</a></p>
+<p><strong><code>sucata.window</code></strong> — <code>get/set_mouse_lock(bool)</code>, <code>get/set_mouse_visible(bool)</code>, <code>get/set_window_title(str)</code>, <code>get/set_window_size(w,h)</code>, <code>get/set_fullscreen(bool)</code>, <code>get/set_vsync(n)</code>, <code>get/set_max_fps(n)</code> (0 = uncapped), <code>quit()</code>, <code>show_debug_info(bool)</code>, <code>get/set_keep_aspect(0|1|2)</code>, <code>get/set_window_icon(path)</code>, <code>get/set_cursor(name)</code>, <code>on_init(callback)</code>, <code>on_exit(callback)</code>. <a href="../references/sucata.window/">Full reference</a></p>
 <p><strong><code>sucata.filesystem</code></strong> — <code>exists(path) -&gt; bool</code>, <code>remove(path)</code>, <code>mkdir(path)</code>, <code>read_file(path) -&gt; str|nil</code>, <code>read_dir(path) -&gt; table|nil</code>, <code>write(path, content) -&gt; bool</code>, <code>rename(old, new)</code>. <a href="../references/sucata.filesystem/">Full reference</a></p>
 <p><strong><code>sucata.math</code></strong> — <code>clamp(v,min,max)</code>, <code>distance(p1,p2)</code>, <code>lerp(a,b,t)</code>, <code>overlapping(Rect,Rect) -&gt; bool, intersection|nil</code>, <code>screen_relative(ScreenRelativeRect) -&gt; x,y,w,h</code>, <code>smooth_index(current_time, interval, max_index) -&gt; index</code>, <code>normalize(...) -&gt; ...</code>, <code>move_towards(current, target, step)</code>. <a href="../references/sucata.math/">Full reference</a></p>
 <p><strong><code>sucata.meta</code></strong> — <code>OS</code> (string), <code>VERSION</code> (string). <a href="../references/sucata.meta/">Full reference</a></p>
 <h2 id="gotchas-checklist">Gotchas checklist</h2>
 <ul>
 <li>Only call <code>sucata.graphic.draw_*</code> from inside <code>draw(state)</code>.</li>
-<li>Behaviours are shared by Lua table pointer identity; <code>require()</code>'s own module caching means referencing a behaviour via <code>Behaviours.Player</code> or a direct <code>require("behaviours.player")</code> both resolve to the same table.</li>
-<li>Behaviours execute in the order listed on the entity — order logic before rendering.</li>
+<li>Always route behaviours through the aggregators (<code>local behaviours = require("behaviours")</code>, then <code>behaviours.player.movement</code>) — never <code>require</code> a behaviour file directly from an entity or another behaviour.</li>
+<li>Register new modules in the matching <code>init.lua</code> (<code>behaviours/</code>, <code>behaviours/&lt;entity&gt;/</code>, <code>mutators/</code>) as soon as you create them, under a key equal to the file name.</li>
+<li>Behaviours execute in the order listed on the entity — order logic before rendering, and <code>status</code> before <code>animator</code> before <code>draw_sprite</code>.</li>
+<li>Mutate shared state slices through <code>mutators.*</code>, not by writing the fields inline from a behaviour.</li>
+<li>Keep constants in <code>commons/</code>, not scattered as magic numbers across behaviours.</li>
 <li><code>init</code>/<code>tick</code>/<code>draw</code>/<code>free</code> are all optional — omit what you don't need.</li>
 <li>Use <code>state.x = state.x or default</code> in <code>init</code> to make fields optional with sane defaults when constructing entities.</li>
 <li>Prefer one texture/atlas over many separate images, and batch text draws, for render performance.</li>
@@ -2130,6 +2258,8 @@ local music_id = sucata.audio.play({ sound = &quot;src://sounds/music.ogg&quot;,
 <li><a href="../cli/">CLI reference</a></li>
 <li><a href="../references/sucata.audio/">API references</a></li>
 <li><a href="https://github.com/sucata-engine/meteors-sucata">meteors-sucata</a> — complete example game source.</li>
+<li><a href="https://github.com/sucata-engine/sucata-cli/blob/main/AGENT.md">sucata-cli/AGENT.md</a> — the <code>sucata</code> CLI tool internals (Odin).</li>
+<li><a href="https://github.com/sucata-engine/sucata-player/blob/main/AGENT.md">sucata-player/AGENT.md</a> — the engine runtime internals (Odin) and how the Lua API is bound.</li>
 </ul>
 
 

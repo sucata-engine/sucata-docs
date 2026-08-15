@@ -546,6 +546,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#aggregators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aggregators
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mutators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mutators
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commons
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#rendering" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1687,6 +1720,39 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#aggregators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aggregators
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mutators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mutators
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commons
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#rendering" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1854,6 +1920,11 @@ can active a scene to load its entities.</p>
 </blockquote>
 <h2 id="behaviour">Behaviour</h2>
 <p>Behaviour is a table with a collections of stateless functions, that recieve an state and changes it, the design of the behaviour it is to be modular, small scripts that can be reused in many entities</p>
+<blockquote>
+<p>Sucata reuses behaviours that share the same Lua table <em>pointer identity</em>, so every behaviour is
+defined once, in its own file, and reached through an aggregator <code>init.lua</code> — see
+<a href="#aggregators">Aggregators</a> below.</p>
+</blockquote>
 <h4 id="initstate">init(state)</h4>
 <p>Called when the scene is loaded</p>
 <p>This function will be called only once.</p>
@@ -1871,7 +1942,7 @@ code every frame that the entity is loaded.</p>
 </blockquote>
 <h4 id="drawstate">draw(state)</h4>
 <p>Called every frame to draw the entity</p>
-<p>Normally used to draw graphics for the entity, using <code>sucata.graphics</code>
+<p>Normally used to draw graphics for the entity, using <code>sucata.graphic</code>
 functions.</p>
 <blockquote>
 <p>This function is optional, and you can omit it if you don't need to draw any
@@ -1885,11 +1956,54 @@ the scene.</p>
 <p>This function is optional, and you can omit it if you don't need to execute
 any command before the entity is removed from the scene.</p>
 </blockquote>
+<h2 id="aggregators">Aggregators</h2>
+<p>A folder of modules is always reached through its <code>init.lua</code>, which re-exports every module under a
+key equal to its file name. <code>behaviours/init.lua</code> and <code>mutators/init.lua</code> are the only entry points
+into those trees:</p>
+<pre><code class="language-lua">-- behaviours/init.lua — generic behaviours + one key per entity subfolder
+return {
+    draw_sprite = require(&quot;behaviours.draw_sprite&quot;),
+    forces      = require(&quot;behaviours.forces&quot;),
+
+    player = require(&quot;behaviours.player&quot;), -- resolves to behaviours/player/init.lua
+}
+</code></pre>
+<pre><code class="language-lua">-- any entity that needs one
+local behaviours = require(&quot;behaviours&quot;)
+
+local entity_behaviours = {
+    behaviours.player.controller, -- entity-specific, from behaviours/player/
+    behaviours.draw_sprite,       -- generic, from behaviours/
+}
+</code></pre>
+<p><code>require</code> caches by module name, so every file gets the exact same tables and behaviour reuse holds
+— but only if nothing bypasses the aggregator with a direct <code>require("behaviours.player.controller")</code>.</p>
+<p>A behaviour only one entity will ever use goes in <code>behaviours/&lt;entity&gt;/</code>; one any entity could reuse
+stays at the top level of <code>behaviours/</code>.</p>
+<h2 id="mutators">Mutators</h2>
+<p><code>mutators/</code> holds plain modules of stateless functions that read and mutate <strong>one named slice</strong> of
+an entity's state, so multiple behaviours share the logic instead of duplicating it. They are the
+only thing that should touch that slice.</p>
+<pre><code class="language-lua">local mutators = require(&quot;mutators&quot;)
+
+mutators.forces.set_force(state, &quot;jump&quot;, { x = 0, y = state.jump_force })
+mutators.health.remove(meteor)
+</code></pre>
+<p>Mutators guard defensively (<code>if not state.forces then return end</code>), since they can run against an
+entity whose behaviour list never initialised that slice.</p>
+<h2 id="commons">Commons</h2>
+<p><code>commons/</code> holds data-only modules: enums and constants shared across behaviours, entities and
+mutators. No functions, no state.</p>
+<pre><code class="language-lua">-- commons/screen.lua
+return { WIDTH = 960, HEIGHT = 540, MARGIN = 16 }
+</code></pre>
+<p>Since each constant set is independent, these are required directly by file:
+<code>local screen = require("commons.screen")</code>.</p>
 <h2 id="rendering">Rendering</h2>
 <h3 id="render-functions">Render functions</h3>
 <p>Sucata have two functions to draw graphics: 
-- <code>sucata.graphic.rect({})</code> - Used to render rectangules, it can have textures
-- <code>sucata.graphic.text({})</code> - Used to render texts using a font, or default font from the system</p>
+- <code>sucata.graphic.draw_rect({})</code> - Used to render rectangules, it can have textures
+- <code>sucata.graphic.draw_text({})</code> - Used to render texts using a font, or default font from the system</p>
 <blockquote>
 <p>Render functions can only be called on draw() function from a behaviour</p>
 </blockquote>
@@ -1909,7 +2023,7 @@ any command before the entity is removed from the scene.</p>
 relationships with each other, and you can use the unique id of the entities to
 reference them, and create relationships between them.</p>
 <p>For example:</p>
-<pre><code class="language-lua">local children_id = sucata.scene.spawn(Bullet())
+<pre><code class="language-lua">local children_id = sucata.scene.spawn(bullet())
 self.children = children_id
 </code></pre>
 <p>In this example, we are spawning a new entity of type <code>Bullet</code> and storing its
@@ -1920,7 +2034,7 @@ bullet_entity.x = self.x
 bullet_entity.y = self.y
 </code></pre>
 <h2 id="building">Building</h2>
-<p>To build your game in sucata you can run <code>sucata build .</code> and build the game for the operational system you are using</p>
+<p>To build your game in sucata you can run <code>sucata build main.lua</code> and build the game for the operational system you are using</p>
 <blockquote>
 <p>For now, while has a limitation that you can't cross build, but we plan to make cross build in the future</p>
 </blockquote>

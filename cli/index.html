@@ -823,6 +823,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#sucata-shader-create" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata shader create
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1447,6 +1458,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#sucata-shader-create" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata shader create
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1481,22 +1503,56 @@
 
 
 <h1 id="sucata-cli">Sucata CLI</h1>
-<p>This CLI of the Sucata, is a collection of helpers</p>
+<p>The Sucata CLI is a collection of helpers, installed as the <code>sucata</code> command.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sucata run &lt;file&gt; [--entity &lt;file&gt;]</code></td>
+<td>Run a game (or a single entity, for isolated testing) in dev mode</td>
+</tr>
+<tr>
+<td><code>sucata build &lt;file&gt; [--icon &lt;path&gt;] [--optimize]</code></td>
+<td>Package the game into a native distributable</td>
+</tr>
+<tr>
+<td><code>sucata shader build &lt;file.glsl&gt;</code></td>
+<td>Compile a <code>.glsl</code> shader into the engine's <code>.schd</code> format</td>
+</tr>
+<tr>
+<td><code>sucata shader create &lt;file&gt; [--post-processing\|-pp] [--font\|-f]</code></td>
+<td>Scaffold a starter <code>.glsl</code> shader</td>
+</tr>
+<tr>
+<td><code>sucata version</code></td>
+<td>Print the engine version and release date</td>
+</tr>
+</tbody>
+</table>
 <h2 id="sucata-run">sucata run</h2>
 <p>Runs a Sucata Lua script file</p>
 <p><strong>arguments</strong></p>
 <ul>
-<li><file> - It is the path of the main lua file </li>
-<li>--entity <entity_file> (optional) - It is the lua file of a entity (for testing)</li>
+<li><code>&lt;file&gt;</code> - It is the path of the main lua file</li>
+<li><code>--entity &lt;entity_file&gt;</code> (optional) - It is the lua file of a entity (for testing)</li>
 </ul>
+<pre><code class="language-bash">sucata run main.lua
+</code></pre>
 <h2 id="sucata-build">sucata build</h2>
 <p>Builds Sucata into a binary game for the current OS</p>
 <p><strong>arguments</strong></p>
 <ul>
-<li><file> - It is the path of the main lua file </li>
-<li>--icon <path> (optional) - It is the icon for your game</li>
-<li>--optimize (optional) - Recompresses opaque images (PNG/BMP/TGA without an alpha channel) as JPEG to shrink the packaged assets. Images with transparency are left untouched, and dimensions are never changed.</li>
+<li><code>&lt;file&gt;</code> - It is the path of the main lua file</li>
+<li><code>--icon &lt;path&gt;</code> (optional) - It is the icon for your game</li>
+<li><code>--optimize</code> (optional) - Recompresses opaque images (PNG/BMP/TGA without an alpha channel) as JPEG to shrink the packaged assets. Images with transparency are left untouched, and dimensions are never changed.</li>
 </ul>
+<pre><code class="language-bash">sucata build main.lua --icon src://icon.png
+</code></pre>
 <blockquote>
 <p>For while, this is a Sucata limitation, you can only build the game for the current OS.</p>
 </blockquote>
@@ -1506,17 +1562,17 @@
 <p>Util to shaders on sucata</p>
 <h3 id="sucata-shader-build">sucata shader build</h3>
 <p>Builds a .glsl file to sucata shader file</p>
-<h1 id="arguments"><strong>arguments</strong></h1>
+<p><strong>arguments</strong></p>
 <ul>
-<li><file> - It is the path of the .glsl shader you wants do build</li>
+<li><code>&lt;file&gt;</code> - It is the path of the .glsl shader you wants do build</li>
 </ul>
 <h3 id="sucata-shader-create">sucata shader create</h3>
 <p>Create a base .glsl shader file</p>
-<h1 id="arguments_1"><strong>arguments</strong></h1>
+<p><strong>arguments</strong></p>
 <ul>
-<li><file> - It is the path for create a .glsl from template</li>
-<li>--post-procesing (optional) - Its a flag to create a template for post-processing [WIP]</li>
-<li>--font (optional) - Its a flag to create a template for font shader</li>
+<li><code>&lt;file&gt;</code> - It is the path for create a .glsl from template</li>
+<li><code>--post-processing</code> / <code>-pp</code> (optional) - Its a flag to create a template for post-processing [WIP]</li>
+<li><code>--font</code> / <code>-f</code> (optional) - Its a flag to create a template for font shader</li>
 </ul>
 
 

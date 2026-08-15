@@ -586,10 +586,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#creating-the-meteor-behaviour" class="md-nav__link">
+  <a href="#movement-with-named-forces" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creating the Meteor Behaviour
+        Movement with named forces
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#moving-the-player-with-forces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Moving the player with forces
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-the-meteor-behaviours" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating the Meteor Behaviours
       
     </span>
   </a>
@@ -1375,10 +1397,32 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#creating-the-meteor-behaviour" class="md-nav__link">
+  <a href="#movement-with-named-forces" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Creating the Meteor Behaviour
+        Movement with named forces
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#moving-the-player-with-forces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Moving the player with forces
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-the-meteor-behaviours" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating the Meteor Behaviours
       
     </span>
   </a>
@@ -1506,52 +1550,217 @@
 
 <h1 id="creating-meteors">Creating Meteors</h1>
 <p>Now we will create the enemies of the game: <strong>meteors</strong> that fall from the sky.</p>
-<h2 id="creating-the-meteor-behaviour">Creating the Meteor Behaviour</h2>
-<p>First, we will create a behaviour responsible for making meteors fall.</p>
-<p>Create the file <code>behaviours/apply_forces.lua</code>, that will make the meteor move:</p>
-<pre><code class="language-lua">return {
-    init = function (state)
-        state.x = state.x or 0
-        state.y = state.y or 0
-        state.force_x = state.force_x or 0
-        state.force_y = state.force_y or 0
-    end,
-    tick = function (state) 
-        local dt = sucata.time.get_delta()
-        state.x = state.x + (state.force_x * dt) -- Move x by force_x in the state
-        state.y = state.y + (state.force_y * dt) -- Move y by force_y in the state
+<h2 id="movement-with-named-forces">Movement with named forces</h2>
+<p>Instead of writing <code>state.x</code> and <code>state.y</code> from every behaviour, Sucata projects accumulate
+<strong>named forces</strong> in <code>state.forces</code> and integrate them once per frame. Gravity, a jump and player
+input can then coexist without overwriting each other.</p>
+<p>The named-force table is a <em>slice</em> of the entity state, and slices are read and written through
+<strong>mutators</strong>: plain modules of stateless functions, kept in <code>mutators/</code>.</p>
+<p>Create the file <code>mutators/forces.lua</code>:</p>
+<pre><code class="language-lua">local function get_force(state, force_type)
+    if not state.forces then
+        return { x = 0, y = 0 }
     end
+
+    return state.forces[force_type] or { x = 0, y = 0 }
+end
+
+local function set_force(state, force_type, value)
+    if not state.forces then -- Safe state modification
+        return
+    end
+
+    state.forces[force_type] = value
+end
+
+local function add_force(state, force_type, value)
+    local force = get_force(state, force_type)
+
+    set_force(state, force_type, {
+        x = force.x + (value.x or 0),
+        y = force.y + (value.y or 0),
+    })
+end
+
+local function clear_force(state, force_type)
+    set_force(state, force_type, { x = 0, y = 0 })
+end
+
+return {
+    get_force = get_force,
+    set_force = set_force,
+    add_force = add_force,
+    clear_force = clear_force,
 }
 </code></pre>
-<p>Create the file <code>behaviours/meteor.lua</code>:</p>
+<blockquote>
+<p><strong>Note</strong>
+Every mutator guards defensively (<code>if not state.forces then return end</code>) — a mutator can be called
+against an entity whose behaviour list never initialised that slice.</p>
+</blockquote>
+<p>Mutators have an aggregator too. Create <code>mutators/init.lua</code>:</p>
 <pre><code class="language-lua">return {
+    forces = require(&quot;mutators.forces&quot;),
+}
+</code></pre>
+<p>From now on, any file that needs a mutator does:</p>
+<pre><code class="language-lua">local mutators = require(&quot;mutators&quot;)
+
+mutators.forces.set_force(state, &quot;gravity&quot;, { x = 0, y = 100 })
+</code></pre>
+<p>Now the behaviour that integrates those forces. Create <code>behaviours/forces.lua</code>:</p>
+<pre><code class="language-lua">---@type Behaviour
+return {
     init = function(state)
-        sucata.scene.add_tag(state, &quot;meteor&quot;) -- Add the &quot;meteor&quot; tag to the entity
-        state.speed = state.speed or math.random(100, 200) -- Random fall speed
-        state.health = state.health or math.random(1, 5) -- Random meteor health
-        state.force_y = state.speed -- define force to move
+        state.x = state.x or 0
+        state.y = state.y or 0
+        state.forces = state.forces or {} -- The slice mutators.forces writes into
+        state.velocity_x = 0
+        state.velocity_y = 0
     end,
 
     tick = function(state)
-        if state.y &gt; 540 then -- When the meteor leaves the screen
+        local delta = sucata.time.get_delta()
+        local velocity_x, velocity_y = 0, 0
+
+        for _, force in pairs(state.forces) do
+            velocity_x = velocity_x + force.x
+            velocity_y = velocity_y + force.y
+        end
+
+        state.velocity_x = velocity_x
+        state.velocity_y = velocity_y
+
+        state.x = state.x + (velocity_x * delta)
+        state.y = state.y + (velocity_y * delta)
+    end
+}
+</code></pre>
+<p>Register it in <code>behaviours/init.lua</code>:</p>
+<pre><code class="language-lua">return {
+    draw_sprite = require(&quot;behaviours.draw_sprite&quot;),
+    forces      = require(&quot;behaviours.forces&quot;),
+
+    player = require(&quot;behaviours.player&quot;),
+}
+</code></pre>
+<blockquote>
+<p><strong>Important</strong>
+<code>behaviours.forces</code> creates <code>state.forces</code> in its <code>init</code>, so it must be listed <strong>before</strong> any
+behaviour that pushes a force during its own <code>init</code>. Otherwise the mutator's guard silently
+discards the force and the entity never moves.</p>
+</blockquote>
+<hr />
+<h2 id="moving-the-player-with-forces">Moving the player with forces</h2>
+<p>Now update <code>behaviours/player/controller.lua</code> to push a named force instead of writing <code>state.x</code>:</p>
+<pre><code class="language-lua">local mutators = require(&quot;mutators&quot;)
+local screen = require(&quot;commons.screen&quot;)
+
+local BOUND = 20
+
+---@type Behaviour
+return {
+    init = function(state)
+        state.speed = state.speed or 200
+    end,
+
+    tick = function(state)
+        local direction = 0
+
+        if sucata.input.is_held(&quot;left&quot;, &quot;a&quot;) and state.x &gt; BOUND then
+            direction = -1
+        elseif sucata.input.is_held(&quot;right&quot;, &quot;d&quot;) and state.x &lt; screen.WIDTH - BOUND then
+            direction = 1
+        end
+
+        -- Setting the force to zero when no key is held stops the player,
+        -- without touching whatever else is pushing the entity.
+        mutators.forces.set_force(state, &quot;movement&quot;, {
+            x = direction * state.speed,
+            y = 0,
+        })
+    end,
+}
+</code></pre>
+<p>And add the <code>forces</code> behaviour to <code>entities/player.lua</code>:</p>
+<pre><code class="language-lua">local behaviours = require(&quot;behaviours&quot;)
+
+local function player(x, y)
+    ---@type Entity
+    return {
+        state = {
+            x = x,
+            y = y
+        },
+
+        behaviours = {
+            behaviours.forces,            -- First: creates state.forces and integrates it
+            behaviours.player.controller, -- Pushes the &quot;movement&quot; force
+            behaviours.draw_sprite,       -- Rendering last
+        }
+    }
+end
+
+return player
+</code></pre>
+<hr />
+<h2 id="creating-the-meteor-behaviours">Creating the Meteor Behaviours</h2>
+<p>Meteors need two behaviours of their own, so they go in <code>behaviours/meteor/</code>.</p>
+<p>The first one makes the meteor fall and reports when it reaches the ground.</p>
+<p>Create the file <code>behaviours/meteor/fall.lua</code>:</p>
+<pre><code class="language-lua">local mutators = require(&quot;mutators&quot;)
+local screen = require(&quot;commons.screen&quot;)
+
+---@type Behaviour
+return {
+    init = function(state)
+        sucata.scene.add_tag(state, &quot;meteor&quot;)              -- Tag the entity as a meteor
+        state.speed = state.speed or math.random(100, 200) -- Random fall speed
+
+        mutators.forces.set_force(state, &quot;gravity&quot;, { x = 0, y = state.speed })
+    end,
+
+    tick = function(state)
+        if state.y &gt; screen.HEIGHT then -- Reached the ground
             sucata.events.emit(&quot;meteor_reached&quot;, state) -- Emit an event
-            sucata.scene.destroy(state) -- Destroy the meteor
+            sucata.scene.destroy(state)                 -- Destroy the meteor
         end
     end
 }
 </code></pre>
-<p>Register the behaviour in <code>behaviours/init.lua</code>:</p>
+<p>The second one holds the meteor's health, which bullets will damage later.</p>
+<p>Create the file <code>behaviours/meteor/damage.lua</code>:</p>
+<pre><code class="language-lua">---@type Behaviour
+return {
+    init = function(state)
+        state.health = state.health or math.random(1, 5) -- Random meteor health
+    end
+}
+</code></pre>
+<p>Create the subfolder aggregator <code>behaviours/meteor/init.lua</code>:</p>
+<pre><code class="language-lua">-- Behaviours only meteors use.
+return {
+    damage = require(&quot;behaviours.meteor.damage&quot;),
+    fall   = require(&quot;behaviours.meteor.fall&quot;),
+}
+</code></pre>
+<p>And expose it in <code>behaviours/init.lua</code>:</p>
 <pre><code class="language-lua">return {
-    ...
-    ApplyForces = require(&quot;behaviours.apply_forces&quot;),
-    Meteor = require(&quot;behaviours.meteor&quot;),
+    draw_sprite = require(&quot;behaviours.draw_sprite&quot;),
+    forces      = require(&quot;behaviours.forces&quot;),
+
+    meteor = require(&quot;behaviours.meteor&quot;),
+    player = require(&quot;behaviours.player&quot;),
 }
 </code></pre>
 <hr />
 <h2 id="creating-the-meteor-entity">Creating the Meteor Entity</h2>
 <p>Now we will create the meteor entity.</p>
 <p>Create the file <code>entities/meteor.lua</code>:</p>
-<pre><code class="language-lua">local function meteor(x, y)
+<pre><code class="language-lua">local behaviours = require(&quot;behaviours&quot;)
+
+local function meteor(x, y)
+    ---@type Entity
     return {
         state = {
             x = x, -- Meteor position
@@ -1559,9 +1768,10 @@
         },
 
         behaviours = {
-            Behaviours.Meteor, -- Meteor logic
-            Behaviours.ApplyForces, -- Apply forces logic
-            Behaviours.DrawSprite -- Render the meteor
+            behaviours.forces,        -- Before meteor.fall, which pushes a force on init
+            behaviours.meteor.fall,   -- Fall speed and reaching the ground
+            behaviours.meteor.damage, -- Health
+            behaviours.draw_sprite,   -- Render the meteor
         }
     }
 end
@@ -1569,44 +1779,57 @@ end
 return meteor
 </code></pre>
 <p>Spawn a meteor in <code>main.lua</code>:</p>
-<pre><code class="language-lua">local Meteor = require(&quot;entities.meteor&quot;)
+<pre><code class="language-lua">local meteor = require(&quot;entities.meteor&quot;)
 
-sucata.scene.spawn(Meteor(300, 100))
+sucata.scene.spawn(meteor(300, 100))
 </code></pre>
 <p>The game should now look like this:</p>
 <p><img alt="White square falling" src="../images/meteor-falling.gif" /></p>
 <hr />
 <h2 id="creating-a-random-start-position-behaviour">Creating a Random Start Position Behaviour</h2>
-<p>Now we will create a behaviour that spawns entities at a <strong>random position</strong>.</p>
+<p>Now we will create a behaviour that spawns entities at a <strong>random position</strong>. Any entity could
+reuse this one, so it stays at the top level of <code>behaviours/</code>.</p>
 <p>Create the file <code>behaviours/random_start_position.lua</code>:</p>
-<pre><code class="language-lua">return {
+<pre><code class="language-lua">local screen = require(&quot;commons.screen&quot;)
+
+---@type Behaviour
+return {
     init = function(state)
-        state.x = state.x or math.random(16, 960 - 16) -- Random X within screen bounds
-        state.y = state.y or math.random(16, 540 - 16) -- Random Y within screen bounds
+        -- When x/y are missing, pick a random point inside the screen bounds
+        state.x = state.x or math.random(screen.MARGIN, screen.WIDTH - screen.MARGIN)
+        state.y = state.y or math.random(screen.MARGIN, screen.HEIGHT - screen.MARGIN)
     end
 }
 </code></pre>
 <p>Register the behaviour in <code>behaviours/init.lua</code>:</p>
 <pre><code class="language-lua">return {
-    ...
-    RandomStartPosition = require(&quot;behaviours.random_start_position&quot;)
+    draw_sprite           = require(&quot;behaviours.draw_sprite&quot;),
+    forces                = require(&quot;behaviours.forces&quot;),
+    random_start_position = require(&quot;behaviours.random_start_position&quot;),
+
+    meteor = require(&quot;behaviours.meteor&quot;),
+    player = require(&quot;behaviours.player&quot;),
 }
 </code></pre>
 <hr />
 <h2 id="spawning-meteors-at-random-positions">Spawning Meteors at Random Positions</h2>
 <p>Now we will update the meteor entity so it spawns at a random X position.</p>
 <p>Update <code>entities/meteor.lua</code>:</p>
-<pre><code class="language-lua">local function meteor()
+<pre><code class="language-lua">local behaviours = require(&quot;behaviours&quot;)
+
+local function meteor()
+    ---@type Entity
     return {
         state = {
             y = -16 -- Start slightly above the screen
         },
 
         behaviours = {
-            Behaviours.RandomStartPosition, -- Random spawn position
-            Behaviours.Meteor, -- Meteor logic
-            Behaviours.ApplyForces, -- Apply forces logic
-            Behaviours.DrawSprite -- Render the meteor
+            behaviours.random_start_position, -- Random x (y is already set)
+            behaviours.forces,
+            behaviours.meteor.fall,
+            behaviours.meteor.damage,
+            behaviours.draw_sprite,
         }
     }
 end
