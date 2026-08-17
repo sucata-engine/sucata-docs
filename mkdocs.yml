@@ -62,6 +62,7 @@ nav:
     - sucata.meta: references/sucata.meta.md
     - sucata.scene: references/sucata.scene.md
     - sucata.time: references/sucata.time.md
+    - sucata.ui: references/sucata.ui.md
     - sucata.window: references/sucata.window.md
   - Third Party: third-party.md
   - About: about.md

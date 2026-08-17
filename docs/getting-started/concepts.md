@@ -151,6 +151,8 @@ Sucata have two functions to draw graphics:
 
 > Render functions can only be called on draw() function from a behaviour
 
+For interactive UI (buttons, checkboxes, sliders, text inputs), use the separate `sucata.ui.*` immediate-mode widget module instead — see [sucata.ui](../references/sucata.ui.md).
+
 ### Render logic
 
 ![](../images/render_diagram.png)

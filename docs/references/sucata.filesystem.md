@@ -89,3 +89,20 @@ Renames a file or directory.
 
 - old_path `string` - Current path of the file or directory  
 - new_path `string` - New path of the file or directory  
+
+---
+
+## sucata.filesystem.open_dialog
+
+Opens the OS native file/folder picker. Blocks until the user closes the dialog.
+
+**parameters**
+
+- options `table` - Dialog options
+  - filters `table` - List of allowed file extensions, e.g. `{"png", "jpg"}` (optional, defaults to allowing any file)
+  - folder `boolean` - `true` to pick a folder instead of a file (optional, default `false`)
+  - multiple `boolean` - `true` to allow selecting more than one entry (optional, default `false`)
+
+**return**
+
+- path `string | table | nil` - The selected full path as a string, a table of full paths when `multiple` is `true`, or `nil` if the dialog was canceled or failed  
