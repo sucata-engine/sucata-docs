@@ -988,6 +988,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#input" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1080,6 +1091,8 @@
   
     
     
+      
+        
       
         
       
@@ -1492,6 +1505,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../references/sucata.ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sucata.ui
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../references/sucata.window/" class="md-nav__link">
         
   
@@ -1787,6 +1828,17 @@
     <span class="md-ellipsis">
       
         Rendering
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ui" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UI
       
     </span>
   </a>
@@ -2198,7 +2250,7 @@ return {
 <p>The <code>status</code>/<code>animator</code> pair is how entities drive their sprite. An entity exposes <code>state.get_status(state)</code>, the <code>status</code> behaviour calls it each tick and emits <code>"status_changed"</code> when the value flips, and <code>animator</code> maps the current status to a row of the texture atlas via <code>state.animations[status] = { atlas_y, time, frames, one_shot? }</code>. Order matters: <code>status</code> must run before <code>animator</code>, and both before <code>draw_sprite</code>.</p>
 <h2 id="rendering">Rendering</h2>
 <ul>
-<li><code>sucata.graphic.draw_rect(props)</code> and <code>sucata.graphic.draw_text(props)</code> are the <strong>only</strong> two draw primitives, and they may <strong>only be called inside a behaviour's <code>draw(state)</code> function</strong> — calling them elsewhere (init/tick) has no effect since drawing happens in a dedicated render pass.</li>
+<li><code>sucata.graphic.draw_rect(props)</code> and <code>sucata.graphic.draw_text(props)</code> are the <strong>only</strong> two <em>sprite/world</em> draw primitives, and they may <strong>only be called inside a behaviour's <code>draw(state)</code> function</strong> — calling them elsewhere (init/tick) has no effect since drawing happens in a dedicated render pass. For buttons/checkboxes/sliders/text input, use <code>sucata.ui.*</code> instead (see <a href="#ui">UI</a> below) — it's a separate, immediate-mode widget system, not built on <code>draw_rect</code>/<code>draw_text</code>.</li>
 <li>The engine batches all draw calls into one <code>renderQueue</code> per frame, grouped by <code>(z_index, texture, fixed, shader)</code>. For performance: reuse the <strong>same texture</strong> across similar sprites (use a texture atlas + <code>atlas_x</code>/<code>atlas_y</code>/<code>atlas_size</code> frame selection instead of many separate textures), and minimize the number of distinct <code>draw_text</code> calls.</li>
 <li>Textures not drawn in a given frame are unloaded from GPU memory automatically. A texture drawn <code>sucata.graphic.get_hot_texture_threshold()</code> times in a row (default 300) is promoted to "hot" and stays resident for the rest of the run. Call <code>sucata.graphic.preload_texture(path)</code> to force that promotion immediately (e.g. for UI/atlas textures you know will be reused constantly), or <code>sucata.graphic.set_hot_texture_threshold(n)</code> to tune the promotion threshold — pass <code>0</code> to disable automatic promotion entirely, so textures only go hot via an explicit <code>preload_texture</code> call.</li>
 <li><code>origin = 0.5</code> centers the sprite on <code>x,y</code> (default origin is <code>0,0</code> = top-left corner).</li>
@@ -2206,6 +2258,31 @@ return {
 <li>Texture atlas animation pattern (change frame based on state): set <code>atlas_x</code>/<code>atlas_y</code> in <code>tick</code> — conventionally that's the <code>animator</code> behaviour's job (<code>atlas_y</code> = row per status, <code>atlas_x</code> = frame, via <code>sucata.math.smooth_index</code> for loops or a clamped counter for <code>one_shot</code>), so add animations to <code>state.animations</code> rather than writing <code>atlas_*</code> from your own behaviour.</li>
 <li>Camera: <code>sucata.camera.get_camera_position/set_camera_position</code>, <code>get_camera_rotation/set_camera_rotation</code>, <code>get_camera_zoom/set_camera_zoom</code> — moves/rotates/zooms the (non-fixed) world view.</li>
 <li>Custom shaders: <code>sucata.graphic.load_shader(path)</code> (loads a compiled <code>.schd</code>) → pass the returned id as <code>shader</code> in <code>draw_rect</code>/<code>draw_text</code> props, or <code>sucata.graphic.add_post_processing(shader_id)</code> for full-screen post-fx, tunable at runtime with <code>sucata.graphic.set_post_processing_args(shader_id, field, value)</code>.</li>
+</ul>
+<h2 id="ui">UI</h2>
+<p>Immediate-mode widgets (<a href="https://github.com/rxi/microui">microui</a>-backed), separate from <code>sucata.graphic</code>. Every <code>sucata.ui.draw_*</code>/<code>popup_open</code> call takes <strong>one table</strong> and must happen inside <code>draw(state)</code>, same as the sprite primitives — calling one elsewhere is a no-op (logs an error).</p>
+<pre><code class="language-lua">-- widgets placed directly on screen, no visible window needed
+sucata.ui.draw_label({ text = &quot;Score: &quot; .. state.score })
+
+if sucata.ui.draw_button({ text = &quot;Pause&quot; }) then
+  sucata.events.emit(&quot;pause_pressed&quot;)
+end
+
+-- widgets inside a window
+if sucata.ui.draw_window({ title = &quot;Settings&quot;, x = 40, y = 40, width = 260, height = 160 }) then
+  local changed, volume = sucata.ui.draw_slider({ id = &quot;volume&quot;, value = 80, low = 0, high = 100 })
+  if changed then sucata.audio.set_group_volume(&quot;music&quot;, volume / 100) end
+
+  sucata.ui.end_window()
+end
+</code></pre>
+<ul>
+<li><strong>No window needed</strong>: a widget drawn without an open <code>draw_window</code>/<code>draw_popup</code> around it lands on an implicit full-screen root canvas automatically — there's no <code>draw_root()</code> to call.</li>
+<li><strong>Contract</strong>: <code>draw_window</code>/<code>draw_popup</code> return whether the container is open — only call the matching <code>end_window</code>/<code>end_popup</code> <strong>if and only if</strong> that call returned <code>true</code> (mirrors vanilla microui's C API). Calling <code>end_*</code> unconditionally, or skipping it after a <code>true</code>, corrupts the UI's internal state for the rest of the run.</li>
+<li>Popups: <code>sucata.ui.popup_open({name=...})</code> to trigger (e.g. from a button click), then <code>sucata.ui.draw_popup({name=...})</code> — same name — to place its contents; closes automatically on an outside click.</li>
+<li>Stateful widgets (<code>draw_checkbox</code>, <code>draw_slider</code>, <code>draw_textbox</code>) persist their value across frames keyed by a required <code>id</code> string you choose — reuse the same <code>id</code> for the same logical widget every frame, and don't reuse it for two different widgets.</li>
+<li>Every <code>draw_*</code> call accepts optional style overrides in the same table: <code>x</code>/<code>y</code>/<code>width</code>/<code>height</code> (must be given together to override auto-layout), <code>text_size</code>, <code>color</code>, <code>background_color</code>, <code>border_color</code> (all <code>{r,g,b,a?}</code>, 0.0-1.0).</li>
+<li>Full field-by-field reference: <a href="../references/sucata.ui/">sucata.ui</a>.</li>
 </ul>
 <h2 id="input">Input</h2>
 <pre><code class="language-lua">if sucata.input.is_held(&quot;left&quot;, &quot;a&quot;) then ... end
@@ -2228,6 +2305,7 @@ local music_id = sucata.audio.play({ sound = &quot;src://sounds/music.ogg&quot;,
 <p>Every module below is <code>sucata.&lt;module&gt;</code>. Full prose docs (with all fields/defaults) are under <a href="../references/sucata.audio/">References</a> in the sidebar.</p>
 <p><strong><code>sucata.scene</code></strong> — <code>load_scene(entities)</code>, <code>spawn(entity) -&gt; id</code>, <code>spawns(entities) -&gt; ids</code>, <code>find_by_id(id) -&gt; entity|nil</code>, <code>destroy(entity_or_id) -&gt; bool</code>, <code>destroys(entities) -&gt; undestroyed_ids</code>, <code>add_tag/has_tag/remove_tag(entity_or_id, tag)</code>, <code>get_entities() -&gt; ids</code>, <code>get_entities_by_tag(tag) -&gt; ids</code>, <code>clear_entities()</code>, <code>init(callback)</code> (run once scene starts), <code>load_global(key, entity) -&gt; id</code>, <code>get_global(key) -&gt; entity|nil</code>, <code>unload_global(key)</code>. <a href="../references/sucata.scene/">Full reference</a></p>
 <p><strong><code>sucata.graphic</code></strong> — <code>draw_rect(RectProps)</code>, <code>draw_text(TextProps)</code> (draw-phase only), <code>set_background_color({r,g,b,a?})</code>, <code>load_shader(path) -&gt; id|nil</code>, <code>add_post_processing(shader_id)</code>, <code>set_post_processing_args(shader_id, field, number|string|table)</code>, <code>remove_post_processing(shader_id)</code>, <code>preload_texture(path)</code> (force-promotes a texture to "hot", see Rendering), <code>get_hot_texture_threshold() -&gt; number</code>, <code>set_hot_texture_threshold(n)</code>. <code>RectProps</code>: <code>x,y,width,height,color,z_index,texture,scale(_x/_y),fixed,tiled,tile_size,tile_width,tile_height,origin(_x/_y),rotation,opacity,atlas_size,atlas_width,atlas_height,atlas_spacing,atlas_margin,atlas_x,atlas_y,shader,shader_args</code>. <code>TextProps</code>: <code>x,y,text,size,font,color,z_index,scale(_x/_y),fixed,origin(_x/_y),rotation,opacity,align,max_width,shader,shader_args</code>. <code>color</code> is <code>{r, g, b, a?}</code> with values 0.0-1.0 and <code>a</code> optional (defaults to 1.0). <a href="../references/sucata.graphic/">Full reference</a></p>
+<p><strong><code>sucata.ui</code></strong> — immediate-mode widgets, every call takes one table, only inside <code>draw(state)</code>: <code>draw_window(UIWindowProps) -&gt; open</code>, <code>end_window()</code>, <code>popup_open({name})</code>, <code>draw_popup({name}) -&gt; open</code>, <code>end_popup()</code>, <code>draw_label({text,...UIStyle})</code>, <code>draw_text({text,...UIStyle})</code>, <code>draw_button({text,...UIStyle}) -&gt; clicked</code>, <code>draw_checkbox({id,text,...UIStyle}) -&gt; changed, checked</code>, <code>draw_slider({id,value,low,high,step,...UIStyle}) -&gt; changed, value</code>, <code>draw_textbox({id,text,...UIStyle}) -&gt; changed, submitted, text</code>. <code>end_*</code> only if the matching <code>draw_*</code> returned <code>true</code>; widgets drawn without an open window/popup land on an implicit root automatically. <code>UIStyle</code> (optional on every widget): <code>x,y,width,height</code> (all four together to override auto-layout), <code>text_size</code>, <code>color</code>, <code>background_color</code>, <code>border_color</code>. See <a href="#ui">UI</a> above for the full contract. <a href="../references/sucata.ui/">Full reference</a></p>
 <p><strong><code>sucata.input</code></strong> — <code>is_pressed/is_held/is_released(...keys) -&gt; bool</code>, <code>get_mouse_position()/get_relative_mouse_position() -&gt; x,y</code>, <code>get_mouse_scroll() -&gt; x,y</code>, <code>get_key() -&gt; code</code>, <code>is_hover({id,x,y,width,height,z_index?,fixed?}) -&gt; bool</code>. <code>Key</code> values: <code>"mouse_left/right/middle"</code>, <code>"a"</code>–<code>"z"</code>, <code>"space"</code>/<code>" "</code>, <code>"escape"</code>/<code>"esc"</code>, <code>"enter"</code>/<code>"return"</code>, <code>"shift"</code>, <code>"ctrl"</code>/<code>"control"</code>, <code>"alt"</code>, <code>"apostrophe"</code>, <code>"tab"</code>, <code>"up"/"down"/"left"/"right"</code>. <a href="../references/sucata.input/">Full reference</a></p>
 <p><strong><code>sucata.gamepad</code></strong> — <code>get_count() -&gt; n</code>, <code>get_info(device) -&gt; name</code>, <code>get_axis(Axis, device?) -&gt; value, device_used</code>, <code>is_held/is_pressed/is_released(Button, device?) -&gt; bool, device_used</code>. <code>Axis</code>: <code>left_x/left_y/right_x/right_y/trigger_left/trigger_right</code>. <code>Button</code>: <code>a/b/x/y/back/guide/start/left_stick/right_stick/left_shoulder/right_shoulder/dpad_up/down/left/right</code>. <a href="../references/sucata.gamepad/">Full reference</a></p>
 <p><strong><code>sucata.audio</code></strong> — <code>play({sound,volume?,pitch?,group?,loop?}) -&gt; sound_id</code>, <code>stop/pause/unpause(sound_id)</code>, <code>get_volume/set_volume(sound_id[, v])</code>, <code>get_pitch/set_pitch(sound_id[, p])</code>, <code>get_group_volume/set_group_volume(group_id[, v])</code>, <code>get_group_pitch/set_group_pitch(group_id[, p])</code>. <a href="../references/sucata.audio/">Full reference</a></p>

@@ -792,6 +792,8 @@
       
         
       
+        
+      
     
     
     
@@ -1087,6 +1089,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#sucatafilesystemopen_dialog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.filesystem.open_dialog
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1299,6 +1312,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../sucata.ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sucata.ui
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../sucata.window/" class="md-nav__link">
         
   
@@ -1484,6 +1525,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#sucatafilesystemopen_dialog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.filesystem.open_dialog
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1620,6 +1672,20 @@
 <ul>
 <li>old_path <code>string</code> - Current path of the file or directory  </li>
 <li>new_path <code>string</code> - New path of the file or directory  </li>
+</ul>
+<hr />
+<h2 id="sucatafilesystemopen_dialog">sucata.filesystem.open_dialog</h2>
+<p>Opens the OS native file/folder picker. Blocks until the user closes the dialog.</p>
+<p><strong>parameters</strong></p>
+<ul>
+<li>options <code>table</code> - Dialog options</li>
+<li>filters <code>table</code> - List of allowed file extensions, e.g. <code>{"png", "jpg"}</code> (optional, defaults to allowing any file)</li>
+<li>folder <code>boolean</code> - <code>true</code> to pick a folder instead of a file (optional, default <code>false</code>)</li>
+<li>multiple <code>boolean</code> - <code>true</code> to allow selecting more than one entry (optional, default <code>false</code>)</li>
+</ul>
+<p><strong>return</strong></p>
+<ul>
+<li>path <code>string | table | nil</code> - The selected full path as a string, a table of full paths when <code>multiple</code> is <code>true</code>, or <code>nil</code> if the dialog was canceled or failed  </li>
 </ul>
 
 
