@@ -794,6 +794,8 @@
       
         
       
+        
+      
     
     
     
@@ -1149,6 +1151,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../sucata.system/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    sucata.system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../sucata.time/" class="md-nav__link">
         
   
@@ -1373,6 +1403,94 @@
     <span class="md-ellipsis">
       
         sucata.ui.draw_textbox
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uiheaderprops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UIHeaderProps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatauidraw_header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.ui.draw_header
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uitreenodeprops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UITreeNodeProps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatauibegin_treenode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.ui.begin_treenode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatauiend_treenode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.ui.end_treenode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatauilayout_row" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.ui.layout_row
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatauilayout_begin_column" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.ui.layout_begin_column
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatauilayout_end_column" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.ui.layout_end_column
       
     </span>
   </a>
@@ -1658,6 +1776,94 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#uiheaderprops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UIHeaderProps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatauidraw_header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.ui.draw_header
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#uitreenodeprops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UITreeNodeProps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatauibegin_treenode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.ui.begin_treenode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatauiend_treenode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.ui.end_treenode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatauilayout_row" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.ui.layout_row
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatauilayout_begin_column" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.ui.layout_begin_column
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sucatauilayout_end_column" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        sucata.ui.layout_end_column
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1739,10 +1945,10 @@
 <h1 id="sucataui">sucata.ui</h1>
 <p>The immediate-mode UI module of Sucata, backed by <a href="https://github.com/rxi/microui">microui</a>. Every <code>draw_*</code>/<code>popup_open</code> call must happen inside a behaviour's <code>draw(state)</code> function, same as <code>sucata.graphic.draw_rect</code>/<code>draw_text</code> — calling them elsewhere is a no-op (logs an error).</p>
 <p><strong>No window needed</strong>: a widget drawn without an open <code>draw_window</code>/<code>draw_popup</code> around it lands on an implicit full-screen root canvas automatically — there's no <code>draw_root()</code> to call.</p>
-<p><strong>Contract</strong>: <code>draw_window</code> and <code>draw_popup</code> return whether the container is open. Only call the matching <code>end_window</code>/<code>end_popup</code> if that call returned <code>true</code> — this mirrors vanilla microui's own C API (<code>if (mu_begin_window(...)) { ...; mu_end_window(...); }</code>). Calling <code>end_*</code> unconditionally, or skipping it after a <code>true</code>, will desync the UI state.</p>
+<p><strong>Contract</strong>: <code>draw_window</code>, <code>draw_popup</code>, and <code>begin_treenode</code> return whether the container is open. Only call the matching <code>end_window</code>/<code>end_popup</code>/<code>end_treenode</code> if that call returned <code>true</code> — this mirrors vanilla microui's own C API (<code>if (mu_begin_window(...)) { ...; mu_end_window(...); }</code>). Calling <code>end_*</code> unconditionally, or skipping it after a <code>true</code>, will desync the UI state. The same applies to <code>layout_begin_column</code>/<code>layout_end_column</code>, except that pair is unconditional (always call both, one after the other).</p>
 <hr />
 <h2 id="uistyle">UIStyle</h2>
-<p>Shared optional overrides accepted by every widget call (<code>draw_label</code>, <code>draw_text</code>, <code>draw_button</code>, <code>draw_checkbox</code>, <code>draw_slider</code>, <code>draw_textbox</code>). All fields are optional and combinable.</p>
+<p>Shared optional overrides accepted by every widget call (<code>draw_label</code>, <code>draw_text</code>, <code>draw_button</code>, <code>draw_checkbox</code>, <code>draw_slider</code>, <code>draw_textbox</code>, <code>draw_header</code>, <code>begin_treenode</code>). All fields are optional and combinable.</p>
 <p><strong>fields</strong>
 - x? <code>number</code> - Overrides the widget's auto-layout x position; must be set together with <code>y</code>/<code>width</code>/<code>height</code>
 - y? <code>number</code> - Overrides the widget's auto-layout y position; must be set together with <code>x</code>/<code>width</code>/<code>height</code>
@@ -1863,6 +2069,76 @@
 <li>submitted <code>boolean</code> - <code>true</code> on the frame Enter was pressed</li>
 <li>text <code>string</code> - the current text</li>
 </ul>
+<hr />
+<h2 id="uiheaderprops">UIHeaderProps</h2>
+<p><strong>fields</strong>
+- text? <code>string</code> - The header label, also used as its unique id (default: <code>""</code>)
+- expanded? <code>boolean</code> - Whether it's expanded the first time this label is seen (default: false)</p>
+<hr />
+<h2 id="sucatauidraw_header">sucata.ui.draw_header</h2>
+<p>Draws a collapsible header/section title. Expanded state is tracked internally by microui, keyed by <code>props.text</code> — no <code>id</code> field needed.</p>
+<p><strong>parameters</strong></p>
+<ul>
+<li>props <code>UIStyle &amp; UIHeaderProps</code></li>
+</ul>
+<p><strong>return</strong></p>
+<ul>
+<li>open <code>boolean</code></li>
+</ul>
+<hr />
+<h2 id="uitreenodeprops">UITreeNodeProps</h2>
+<p><strong>fields</strong>
+- text? <code>string</code> - The tree node label, also used as its unique id (default: <code>""</code>)
+- expanded? <code>boolean</code> - Whether it's expanded the first time this label is seen (default: false)</p>
+<hr />
+<h2 id="sucatauibegin_treenode">sucata.ui.begin_treenode</h2>
+<p>Begins a collapsible tree node. Widgets drawn between this and <code>end_treenode()</code> are indented and only rendered while it's expanded. Expanded state is tracked internally by microui, keyed by <code>props.text</code>.</p>
+<p><strong>parameters</strong></p>
+<ul>
+<li>props <code>UIStyle &amp; UITreeNodeProps</code></li>
+</ul>
+<p><strong>return</strong></p>
+<ul>
+<li>open <code>boolean</code></li>
+</ul>
+<hr />
+<h2 id="sucatauiend_treenode">sucata.ui.end_treenode</h2>
+<p>Ends a tree node. Only call this if the matching <code>begin_treenode()</code> call returned <code>true</code>.</p>
+<hr />
+<h2 id="sucatauilayout_row">sucata.ui.layout_row</h2>
+<p>Starts a new row of widgets with fixed/relative column widths, similar to vanilla microui's <code>mu_layout_row</code>. Every widget drawn after this call occupies the next column; once <code>#widths</code> widgets have been placed, the row wraps and reuses the same widths again. Calling it again resets the columns.</p>
+<p><strong>parameters</strong></p>
+<ul>
+<li>props <code>{widths?: number[], height?: number}</code> - Each entry in <code>widths</code> is a column width in pixels: positive is a fixed width, negative fills remaining row space (e.g. <code>-1</code> takes the rest, two negative columns split what's left), <code>0</code>/omitted uses the widget's default width. <code>height</code> is the row height in pixels (<code>0</code>/omitted uses the widget's default height).</li>
+</ul>
+<p><strong>example</strong></p>
+<pre><code class="language-lua">-- 3 columns: 86px fixed, then split the remaining space two ways
+sucata.ui.layout_row({ widths = { 86, -110, -1 } })
+sucata.ui.draw_label({ text = &quot;Test buttons:&quot; })
+sucata.ui.draw_button({ text = &quot;Button 1&quot; })
+sucata.ui.draw_button({ text = &quot;Button 2&quot; })
+</code></pre>
+<hr />
+<h2 id="sucatauilayout_begin_column">sucata.ui.layout_begin_column</h2>
+<p>Begins a sub-layout column, occupying the current layout cell (as produced by the enclosing <code>layout_row</code>). Useful for stacking widgets vertically inside one column of a row while a sibling column has its own widgets. Always pair with <code>layout_end_column()</code>.</p>
+<hr />
+<h2 id="sucatauilayout_end_column">sucata.ui.layout_end_column</h2>
+<p>Ends a column opened with <code>layout_begin_column()</code>.</p>
+<p><strong>example</strong></p>
+<pre><code class="language-lua">sucata.ui.layout_row({ widths = { 140, -1 } })
+
+sucata.ui.layout_begin_column()
+if sucata.ui.begin_treenode({ text = &quot;Test 1&quot; }) then
+  sucata.ui.draw_label({ text = &quot;Hello&quot; })
+  sucata.ui.draw_label({ text = &quot;world&quot; })
+  sucata.ui.end_treenode()
+end
+sucata.ui.layout_end_column()
+
+sucata.ui.layout_begin_column()
+sucata.ui.draw_text({ text = &quot;Some wrapped text next to the tree, in its own column.&quot; })
+sucata.ui.layout_end_column()
+</code></pre>
 <hr />
 <h2 id="example">Example</h2>
 <pre><code class="language-lua">-- widgets placed directly on screen, no visible window - no draw_root() needed
