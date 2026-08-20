@@ -61,6 +61,7 @@ nav:
     - sucata.math: references/sucata.math.md
     - sucata.meta: references/sucata.meta.md
     - sucata.scene: references/sucata.scene.md
+    - sucata.system: references/sucata.system.md
     - sucata.time: references/sucata.time.md
     - sucata.ui: references/sucata.ui.md
     - sucata.window: references/sucata.window.md

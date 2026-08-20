@@ -4,13 +4,13 @@ The immediate-mode UI module of Sucata, backed by [microui](https://github.com/r
 
 **No window needed**: a widget drawn without an open `draw_window`/`draw_popup` around it lands on an implicit full-screen root canvas automatically — there's no `draw_root()` to call.
 
-**Contract**: `draw_window` and `draw_popup` return whether the container is open. Only call the matching `end_window`/`end_popup` if that call returned `true` — this mirrors vanilla microui's own C API (`if (mu_begin_window(...)) { ...; mu_end_window(...); }`). Calling `end_*` unconditionally, or skipping it after a `true`, will desync the UI state.
+**Contract**: `draw_window`, `draw_popup`, and `begin_treenode` return whether the container is open. Only call the matching `end_window`/`end_popup`/`end_treenode` if that call returned `true` — this mirrors vanilla microui's own C API (`if (mu_begin_window(...)) { ...; mu_end_window(...); }`). Calling `end_*` unconditionally, or skipping it after a `true`, will desync the UI state. The same applies to `layout_begin_column`/`layout_end_column`, except that pair is unconditional (always call both, one after the other).
 
 ---
 
 ## UIStyle
 
-Shared optional overrides accepted by every widget call (`draw_label`, `draw_text`, `draw_button`, `draw_checkbox`, `draw_slider`, `draw_textbox`). All fields are optional and combinable.
+Shared optional overrides accepted by every widget call (`draw_label`, `draw_text`, `draw_button`, `draw_checkbox`, `draw_slider`, `draw_textbox`, `draw_header`, `begin_treenode`). All fields are optional and combinable.
 
 **fields**
 - x? `number` - Overrides the widget's auto-layout x position; must be set together with `y`/`width`/`height`
@@ -168,6 +168,106 @@ Draws a text input box. State persists across frames keyed by `props.id`.
 - changed `boolean`
 - submitted `boolean` - `true` on the frame Enter was pressed
 - text `string` - the current text
+
+---
+
+## UIHeaderProps
+
+**fields**
+- text? `string` - The header label, also used as its unique id (default: `""`)
+- expanded? `boolean` - Whether it's expanded the first time this label is seen (default: false)
+
+---
+
+## sucata.ui.draw_header
+
+Draws a collapsible header/section title. Expanded state is tracked internally by microui, keyed by `props.text` — no `id` field needed.
+
+**parameters**
+
+- props `UIStyle & UIHeaderProps`
+
+**return**
+
+- open `boolean`
+
+---
+
+## UITreeNodeProps
+
+**fields**
+- text? `string` - The tree node label, also used as its unique id (default: `""`)
+- expanded? `boolean` - Whether it's expanded the first time this label is seen (default: false)
+
+---
+
+## sucata.ui.begin_treenode
+
+Begins a collapsible tree node. Widgets drawn between this and `end_treenode()` are indented and only rendered while it's expanded. Expanded state is tracked internally by microui, keyed by `props.text`.
+
+**parameters**
+
+- props `UIStyle & UITreeNodeProps`
+
+**return**
+
+- open `boolean`
+
+---
+
+## sucata.ui.end_treenode
+
+Ends a tree node. Only call this if the matching `begin_treenode()` call returned `true`.
+
+---
+
+## sucata.ui.layout_row
+
+Starts a new row of widgets with fixed/relative column widths, similar to vanilla microui's `mu_layout_row`. Every widget drawn after this call occupies the next column; once `#widths` widgets have been placed, the row wraps and reuses the same widths again. Calling it again resets the columns.
+
+**parameters**
+
+- props `{widths?: number[], height?: number}` - Each entry in `widths` is a column width in pixels: positive is a fixed width, negative fills remaining row space (e.g. `-1` takes the rest, two negative columns split what's left), `0`/omitted uses the widget's default width. `height` is the row height in pixels (`0`/omitted uses the widget's default height).
+
+**example**
+
+```lua
+-- 3 columns: 86px fixed, then split the remaining space two ways
+sucata.ui.layout_row({ widths = { 86, -110, -1 } })
+sucata.ui.draw_label({ text = "Test buttons:" })
+sucata.ui.draw_button({ text = "Button 1" })
+sucata.ui.draw_button({ text = "Button 2" })
+```
+
+---
+
+## sucata.ui.layout_begin_column
+
+Begins a sub-layout column, occupying the current layout cell (as produced by the enclosing `layout_row`). Useful for stacking widgets vertically inside one column of a row while a sibling column has its own widgets. Always pair with `layout_end_column()`.
+
+---
+
+## sucata.ui.layout_end_column
+
+Ends a column opened with `layout_begin_column()`.
+
+**example**
+
+```lua
+sucata.ui.layout_row({ widths = { 140, -1 } })
+
+sucata.ui.layout_begin_column()
+if sucata.ui.begin_treenode({ text = "Test 1" }) then
+  sucata.ui.draw_label({ text = "Hello" })
+  sucata.ui.draw_label({ text = "world" })
+  sucata.ui.end_treenode()
+end
+sucata.ui.layout_end_column()
+
+sucata.ui.layout_begin_column()
+sucata.ui.draw_text({ text = "Some wrapped text next to the tree, in its own column." })
+sucata.ui.layout_end_column()
+```
 
 ---
 
